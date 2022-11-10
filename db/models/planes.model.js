@@ -1,9 +1,9 @@
 const { Model, DataTypes } = require('sequelize')
 const msg = require('../../utils/validationsMsg.js')
 
-const ROOMS_TABLE = 'Salones'
+const PLANES_TABLE = 'Planes'
 
-const RoomsSchema = {
+const PlanesSchema = {
   id: {
     allowNull: false,
     primaryKey: true,
@@ -16,18 +16,34 @@ const RoomsSchema = {
   nombre: {
     type: DataTypes.STRING,
     allowNull: false,
-    unique: true,
     validate: {
       is: msg.isAlphanumeric,
       notNull: msg.notNull
     }
   },
-  capacidad: {
+  precio: {
+    type: DataTypes.FLOAT,
+    allowNull: false,
+    validate: {
+      isFloat: msg.isFloat,
+      notNull: msg.notNull
+    }
+  },
+  duracion: {
     type: DataTypes.INTEGER,
     allowNull: false,
     validate: {
       isNumeric: msg.isNumeric,
       notNull: msg.notNull
+    }
+  },
+  esExpandible: {
+    type: DataTypes.INTEGER,
+    field: 'es_expandible',
+    allowNull: false,
+    validate: {
+      notNull: msg.notNull,
+      isNumeric: msg.isNumeric
     }
   },
   estado: {
@@ -40,22 +56,26 @@ const RoomsSchema = {
   }
 }
 
-class Rooms extends Model {
+class Planes extends Model {
   static associate(models) {
-    this.hasMany(models.Horarios, {
-      as: 'horarios',
-      foreignKey: 'idSalon'
+    this.hasMany(models.Suscripciones, {
+      as: 'sucripciones',
+      foreignKey: 'idPlan'
     })
   }
 
   static config(sequelize) {
     return {
       sequelize,
-      tableName: ROOMS_TABLE,
-      modelName: ROOMS_TABLE,
+      tableName: PLANES_TABLE,
+      modelName: PLANES_TABLE,
       timestamps: false
     }
   }
 }
 
-module.exports = { Rooms, RoomsSchema, ROOMS_TABLE }
+module.exports = {
+  Planes,
+  PlanesSchema,
+  PLANES_TABLE
+}

@@ -35,4 +35,14 @@ const sonDatosValidos = (allData, targets = [], idData, idTarget) => {
   return targets.every((item) => allIdData.includes(item[idTarget]))
 }
 
-module.exports = { agregarRolSocio, agregarRolRecepcionista, sonDatosValidos }
+const agregarDiasAFecha = (dias) => {
+  const date = new Date()
+  return date.setDate(date.getDate() + dias)
+}
+
+module.exports = {
+  agregarRolSocio,
+  agregarRolRecepcionista,
+  sonDatosValidos,
+  agregarDiasAFecha
+}

@@ -1,8 +1,8 @@
 const { Model, DataTypes } = require('sequelize')
 const msg = require('../../utils/validationsMsg.js')
-const { DISCIPLINAS_TABLE } = require('./disciplinas.model.js')
+const { PLANES_TABLE } = require('./planes.model.js')
 const { USUARIOS_TABLE } = require('./usuarios.model.js')
-const SUSCRIPCION_TABLE = 'Suscripcion'
+const SUSCRIPCION_TABLE = 'Suscripciones'
 
 const SuscripcionSchema = {
   id: {
@@ -29,16 +29,16 @@ const SuscripcionSchema = {
     onUpdate: 'CASCADE',
     onDelete: 'SET NULL'
   },
-  idDisciplina: {
+  idPlan: {
     type: DataTypes.STRING,
-    field: 'id_disciplina',
+    field: 'id_plan',
     allowNull: false,
     validate: {
       is: msg.isAlphanumeric,
       notNull: msg.notNull
     },
     references: {
-      model: DISCIPLINAS_TABLE,
+      model: PLANES_TABLE,
       key: 'id'
     },
     onUpdate: 'CASCADE',
@@ -53,28 +53,53 @@ const SuscripcionSchema = {
       notNull: msg.notNull
     }
   },
-  planPago: {
-    type: DataTypes.STRING,
-    field: 'plan_pago',
+  fechaFin: {
+    type: DataTypes.DATEONLY,
+    field: 'fecha_fin',
     allowNull: false,
     validate: {
-      is: msg.isAlphanumeric,
+      isDate: msg.isDate,
       notNull: msg.notNull
     }
   },
-  montoInscri: {
+  cantidad: {
     type: DataTypes.INTEGER,
-    field: 'monto_inscri',
     allowNull: false,
     validate: {
-      isNumber: msg.isNumeric,
+      isNumeric: msg.isNumeric,
       notNull: msg.notNull
+    }
+  },
+  montoCancelado: {
+    type: DataTypes.FLOAT,
+    field: 'monto_cancelado',
+    allowNull: false,
+    validate: {
+      isFloat: msg.isFloat,
+      notNull: msg.notNull
+    }
+  },
+  estado: {
+    type: DataTypes.INTEGER,
+    allowNull: false,
+    defaultValue: 1,
+    validate: {
+      is: msg.isState
     }
   }
 }
 
 class Suscripcion extends Model {
-  static associate(models) {}
+  static associate(models) {
+    this.belongsTo(models.Planes, {
+      as: 'plan',
+      foreignKey: 'idPlan'
+    })
+    this.belongsTo(models.Usuarios, {
+      as: 'socio',
+      foreignKey: 'idSocio'
+    })
+  }
 
   static config(sequelize) {
     return {

@@ -1,8 +1,13 @@
-const { Op } = require('sequelize')
 const { models } = require('../libs/sequelize.js')
 
 async function agregarHorario(data) {
   return await models.Horarios.bulkCreate(data)
+}
+
+async function ListarHorarios() {
+  return await models.Horarios.findAll({
+    include: ['salon', 'disciplina', 'entrenador']
+  })
 }
 
 async function eliminarHorarios(CodSocios) {
@@ -31,5 +36,6 @@ module.exports = {
   agregarHorario,
   buscarHorario,
   eliminarHorarios,
-  modificarHorarios
+  modificarHorarios,
+  ListarHorarios
 }

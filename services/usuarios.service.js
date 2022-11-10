@@ -7,7 +7,7 @@ async function obtenerUsuariosPorRol(active = false, ...rolNames) {
     where: {
       '$roles.nombre$': { [Op.in]: rolNames }
     },
-    include: ['roles', 'horarios']
+    include: ['roles']
   }
 
   if (active) options.where.estado = 1

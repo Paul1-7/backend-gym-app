@@ -31,14 +31,6 @@ const DisciplinasSchema = {
       notNull: msg.notNull
     }
   },
-  salon: {
-    type: DataTypes.STRING,
-    allowNull: false,
-    validate: {
-      is: msg.isAlphanumeric,
-      notNull: msg.notNull
-    }
-  },
   estado: {
     type: DataTypes.INTEGER,
     allowNull: false,
@@ -51,12 +43,10 @@ const DisciplinasSchema = {
 
 class Disciplinas extends Model {
   static associate(models) {
-    this.belongsToMany(models.Usuarios, {
+    this.hasMany(models.Horarios, {
       //muchos a muchos
-      as: 'usuarios',
-      through: models.Horarios,
-      foreignKey: 'idDisciplina',
-      otherKey: 'idUsuario'
+      as: 'horarios',
+      foreignKey: 'idDisciplina'
     })
   }
 

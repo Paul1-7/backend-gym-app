@@ -2,7 +2,7 @@ const { Op } = require('sequelize')
 const { models } = require('../libs/sequelize.js')
 
 async function ListarDisciplinas() {
-  return await models.Disciplinas.findAll({ include: 'usuarios' })
+  return await models.Disciplinas.findAll()
 }
 
 async function BuscarDisciplinas(id) {

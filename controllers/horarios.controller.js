@@ -9,7 +9,7 @@ const msg = {
 
 const listarHorarios = async (req, res, next) => {
   try {
-    const horarios = await services.listarHorarios()
+    const horarios = await services.ListarHorarios()
     res.json(horarios)
   } catch (error) {
     next(error)
