@@ -92,6 +92,11 @@ class Productos extends Model {
     //   foreignKey: 'idProd',
     //   as: 'detalleVentas'
     // })
+
+    this.belongsTo(models.Detalle_Ventas, {
+      as: 'detalleVentas',
+      foreignKey: 'id'
+    })
   }
 
   static config(sequelize) {

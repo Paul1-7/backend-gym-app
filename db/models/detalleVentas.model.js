@@ -33,7 +33,7 @@ const DetalleVentasSchema = {
     onDelete: 'SET NULL'
   },
   idProd: {
-    allowNull: false,
+    allowNull: true,
     type: DataTypes.STRING,
     comment: 'identificador del producto',
 

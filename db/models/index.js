@@ -41,6 +41,7 @@ function setUpModels(sequelize) {
   Rooms.associate(sequelize.models)
   Ventas.associate(sequelize.models)
   Suscripcion.associate(sequelize.models)
+  DetalleVentas.associate(sequelize.models)
 }
 
 module.exports = setUpModels

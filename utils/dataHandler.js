@@ -40,9 +40,24 @@ const agregarDiasAFecha = (dias) => {
   return date.setDate(date.getDate() + dias)
 }
 
+const obtenerNuevoStock = (allProduct, bodyProducts) => {
+  return bodyProducts.map((product) => {
+    const productFound = allProduct
+      .find((dataValues) => dataValues.id === product.id)
+      .toJSON()
+    const { stock } = productFound
+    const newStockProd = stock - product.cantidad
+    return {
+      ...productFound,
+      stock: newStockProd
+    }
+  })
+}
+
 module.exports = {
   agregarRolSocio,
   agregarRolRecepcionista,
   sonDatosValidos,
-  agregarDiasAFecha
+  agregarDiasAFecha,
+  obtenerNuevoStock
 }

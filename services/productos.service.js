@@ -1,3 +1,4 @@
+const { Op } = require('sequelize')
 const { models } = require('../libs/sequelize.js')
 
 async function ListarProductos() {
@@ -22,10 +23,26 @@ async function EliminarProducto(id) {
   return await producto?.destroy()
 }
 
+async function BuscarProductosPorIds(ids) {
+  return await models.Productos.findAll({
+    where: {
+      id: { [Op.in]: ids }
+    }
+  })
+}
+
+async function ActualizarStockPorIds(newData) {
+  return await models.Productos.bulkCreate(newData, {
+    updateOnDuplicate: ['stock']
+  })
+}
+
 module.exports = {
   ListarProductos,
   BuscarProducto,
   AgregarProducto,
   ModificarProducto,
-  EliminarProducto
+  EliminarProducto,
+  BuscarProductosPorIds,
+  ActualizarStockPorIds
 }
