@@ -88,11 +88,6 @@ const ProductosSchema = {
 
 class Productos extends Model {
   static associate(models) {
-    // this.hasMany(models.Detalle_Ventas, {
-    //   foreignKey: 'idProd',
-    //   as: 'detalleVentas'
-    // })
-
     this.belongsTo(models.Detalle_Ventas, {
       as: 'detalleVentas',
       foreignKey: 'id'

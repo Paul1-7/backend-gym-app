@@ -60,16 +60,9 @@ const buscarEmpleado = async (req, res, next) => {
 const crearEmpleado = async (req, res, next) => {
   try {
     const { body } = req
-    let { roles, horarios, ...dataUser } = body
+    let { roles, ...dataUser } = body
 
     const allRoles = await obtenerRoles()
-    const idDisciplinas = horarios?.map(
-      (disciplinas) => disciplinas.idDisciplina
-    )
-    const disciplinas = await BuscarDisciplinasPorIds(idDisciplinas)
-
-    if (horarios?.length !== disciplinas?.length || horarios?.length <= 0)
-      return ERROR_RESPONSE.notAcceptable(msg.notValidDisciplina, res)
 
     if (
       !sonDatosValidos(allRoles, roles, 'id', 'idRol') ||
@@ -79,21 +72,11 @@ const crearEmpleado = async (req, res, next) => {
       return ERROR_RESPONSE.notFound(msg.rolNotFound, res)
 
     roles = agregarRolSocio(allRoles, roles)
-    console.log('TCL: crearEmpleado -> rolesSocio', roles)
-
     roles = agregarRolRecepcionista(allRoles, roles)
-    console.log('TCL: crearEmpleado -> rolesRecep', roles)
 
     const empleado = await userServices.crearUsuario(dataUser)
 
-    const newHorario = horarios.map((horario) => {
-      return {
-        ...horario,
-        idUsuario: empleado.toJSON().id
-      }
-    })
     await agregarRolUsuario(empleado.dataValues.id, roles)
-    await agregarHorario(newHorario)
 
     res.json({ message: msg.addSuccess })
   } catch (error) {

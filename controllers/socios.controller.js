@@ -52,22 +52,22 @@ const AgregarSocios = async (req, res, next) => {
 
     const { id: idRol } = rolSocio
 
-    const plan = await BuscarPlan(idPlan)
-    if (!plan) return ERROR_RESPONSE.notFound(msg.notFound, res)
-
     const newsocios = await services.crearUsuario(socio)
 
-    const newSuscripcion = {
-      idPlan,
-      cantidad,
-      idSocio: newsocios.toJSON().id,
-      fechaInicio: new Date(),
-      fechaFin: agregarDiasAFecha(plan.duracion),
-      montoCancelado: plan.precio * cantidad
+    const plan = await BuscarPlan(idPlan)
+    if (plan) {
+      const newSuscripcion = {
+        idPlan,
+        cantidad,
+        idSocio: newsocios.toJSON().id,
+        fechaInicio: new Date(),
+        fechaFin: agregarDiasAFecha(plan.duracion),
+        montoCancelado: plan.precio * cantidad
+      }
+      await AgregarSuscripcion(newSuscripcion)
     }
 
     await agregarRolUsuario(newsocios.dataValues.id, [{ idRol }])
-    await AgregarSuscripcion(newSuscripcion)
     res.json({ message: msg.addSuccess })
   } catch (error) {
     next(error)

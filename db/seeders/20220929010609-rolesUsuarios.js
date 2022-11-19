@@ -47,11 +47,6 @@ module.exports = {
         },
         {
           id: 'a59ae009-9df4-40ba-903a-c2ecf7b8ffe5',
-          id_usuario: '6efc6605-0364-4980-8428-4d332fd41cae',
-          id_rol: '28e921f8-043e-4911-a111-9ad9f31317f6'
-        },
-        {
-          id: '73635c9e-cd35-4c4c-b101-86f993bc86a9',
           id_usuario: 'b4384d48-9cc3-43c4-b610-e03933c45d7f',
           id_rol: '28e921f8-043e-4911-a111-9ad9f31317f6'
         }

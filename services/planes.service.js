@@ -5,7 +5,7 @@ async function ListarPlanes() {
 }
 
 async function BuscarPlan(id) {
-  return (await models.Planes.findByPk(id)).toJSON()
+  return (await models.Planes.findByPk(id))?.toJSON()
 }
 
 async function AgregarPlan(salon) {
