@@ -1,11 +1,6 @@
 const { ERROR_RESPONSE } = require('../middlewares/error.handle.js')
-const {
-  EliminarInscripcion,
-  ModificarInscripcion
-} = require('../services/inscripcion.service.js')
-const {
-  BuscarDisciplinasPorIds
-} = require('../services/disciplinas.service.js')
+const { EliminarInscripcion } = require('../services/inscripcion.service.js')
+
 const services = require('../services/usuarios.service.js')
 const { SOCIO } = require('../config/roles.js')
 const { buscarRolPorNombre } = require('../services/roles.service.js')
@@ -17,8 +12,9 @@ const { AgregarSuscripcion } = require('../services/suscripciones.service.js')
 const msg = {
   notFound: 'Socio no encontrado',
   delete: 'Socio eliminado',
-  notValid: 'La disciplina no es valida',
-  addSuccess: 'Socio agregado correctamente'
+  notValid: 'La informacion no es valida',
+  addSuccess: 'Socio agregado correctamente',
+  updateSuccess: 'Socio actualizado correctamente'
 }
 
 const ListarSocios = async (req, res, next) => {
@@ -34,7 +30,7 @@ const ListarSocios = async (req, res, next) => {
 const BuscarSocios = async (req, res, next) => {
   try {
     const { id } = req.params
-    const socios = await services.BuscarSocios(id)
+    const socios = await services.buscarUsuario(id)
 
     if (!socios) return ERROR_RESPONSE.notFound(msg.notFound, res)
     res.json(socios)
@@ -78,29 +74,13 @@ const ModificarSocios = async (req, res, next) => {
   try {
     const { id } = req.params
     const { body } = req
-    const { inscripcion, ...socios } = body
 
-    const existSocios = await services.BuscarSocios(id)
+    const existSocios = await services.buscarUsuario(id)
     if (!existSocios) return ERROR_RESPONSE.notFound(msg.notFound, res)
 
-    const idDisciplinas = inscripcion.map(
-      (disciplinas) => disciplinas.CodDisciplinas
-    )
-    const disciplinas = await BuscarDisciplinasPorIds(idDisciplinas)
+    await services.actualizarUsuario(id, body)
 
-    if (inscripcion.length !== disciplinas.length || inscripcion.length <= 0)
-      return ERROR_RESPONSE.notAcceptable(msg.notValid, res)
-
-    await services.ModificarSocios(id, socios)
-
-    const newInscripcion = inscripcion.map((disciplinas) => {
-      return {
-        ...disciplinas,
-        CodSocios: id
-      }
-    })
-    await ModificarInscripcion(id, newInscripcion)
-    res.json(socios)
+    res.json({ id, message: msg.updateSuccess })
   } catch (error) {
     next(error)
   }
@@ -109,12 +89,15 @@ const ModificarSocios = async (req, res, next) => {
 const EliminarSocios = async (req, res, next) => {
   try {
     const { id } = req.params
-    await EliminarInscripcion(id)
-    const socios = await services.EliminarSocios(id)
+    const existeSocio = await services.buscarUsuario(id)
+    if (!existeSocio) return ERROR_RESPONSE.notFound(msg.notFound, res)
 
-    if (!socios) return ERROR_RESPONSE.notFound(msg.notFound, res)
+    const socioBorrado = await services.borrarUsuario(id)
 
-    res.json({ message: msg.delete })
+    if (socioBorrado instanceof Error)
+      return ERROR_RESPONSE.notAcceptable(socioBorrado.message, res)
+
+    res.json({ message: msg.delete, id })
   } catch (error) {
     next(error)
   }

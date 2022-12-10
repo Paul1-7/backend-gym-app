@@ -110,11 +110,25 @@ class Usuarios extends Model {
       as: 'suscripciones',
       foreignKey: 'idSocio'
     })
-    this.belongsToMany(models.Horarios, {
+    this.hasMany(models.Horarios, {
       as: 'horarios',
-      through: models.Programacion,
-      foreignKey: 'idUsuario',
-      otherKey: 'idHorario'
+      foreignKey: 'idEntrenador'
+    })
+
+    this.hasMany(models.Programacion, {
+      as: 'programacion',
+      foreignKey: 'idSocio'
+    })
+
+    this.hasMany(models.Ventas, {
+      foreignKey: 'idVendedor',
+      sourceKey: 'id',
+      as: 'ventasVendedor'
+    })
+    this.hasMany(models.Ventas, {
+      foreignKey: 'idSocio',
+      sourceKey: 'id',
+      as: 'ventasSocios'
     })
   }
 

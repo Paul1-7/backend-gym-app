@@ -37,7 +37,7 @@ const msg = {
   msgUniqueValue: (value) =>
     `el valor ingresado en el campo "${value}" ya existe en el sistema`,
   msgValidationError: 'ERROR DE VALIDACIÓN:',
-  msgDatabaseError: 'ocurrio un error al guardar en la base de datos',
+  msgDatabaseError: 'no se puede realizar la accion solicitada',
   msgErrorForeignKey:
     'Otras partes del sistema estan haciendo uso del registró seleccionado'
 }

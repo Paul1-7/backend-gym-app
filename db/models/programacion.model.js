@@ -47,7 +47,17 @@ const ProgramacionSchema = {
 }
 
 class Programacion extends Model {
-  static associate(models) {}
+  static associate(models) {
+    this.belongsToMany(models.Usuarios, {
+      as: 'socio',
+      foreignKey: 'idUsuario'
+    })
+
+    this.belongsToMany(models.Horarios, {
+      as: 'horario',
+      foreignKey: 'idHorario'
+    })
+  }
 
   static config(sequelize) {
     return {
