@@ -2,7 +2,9 @@ const express = require('express')
 const {
   ListarSuscripciones,
   BuscarSuscripcion,
-  AgregarSuscripcion
+  AgregarSuscripcion,
+  ListaReporteSuscripciones,
+  ListarReportesPorRenovacion
 } = require('../controllers/suscripciones.controller.js')
 
 const { checkId } = require('../middlewares/validator.handle.js')
@@ -10,6 +12,8 @@ const { checkId } = require('../middlewares/validator.handle.js')
 const Suscripciones = express.Router()
 
 Suscripciones.get('/', ListarSuscripciones)
+Suscripciones.get('/reporte-default', ListaReporteSuscripciones)
+Suscripciones.get('/reporte-renovacion', ListarReportesPorRenovacion)
 Suscripciones.get('/:id', checkId, BuscarSuscripcion)
 Suscripciones.post('/', AgregarSuscripcion)
 // Suscripciones.put('/:id', checkId, ModificarSuscripcion)

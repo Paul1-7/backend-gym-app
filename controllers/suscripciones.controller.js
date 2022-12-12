@@ -18,6 +18,29 @@ const ListarSuscripciones = async (req, res, next) => {
   }
 }
 
+const ListarReportesPorRenovacion = async (req, res, next) => {
+  try {
+    const { query } = req
+    const suscripcion = await services.SociosPorRenovacionSuscripciones(query)
+    res.json(suscripcion)
+  } catch (error) {
+    next(error)
+  }
+}
+
+const ListaReporteSuscripciones = async (req, res, next) => {
+  try {
+    const { query } = req
+
+    const suscripciones = !Object.keys(query).length
+      ? await services.ListarSuscripciones()
+      : await services.SuscripcionesEntreFechas(query)
+    res.json(suscripciones)
+  } catch (error) {
+    next(error)
+  }
+}
+
 const BuscarSuscripcion = async (req, res, next) => {
   try {
     const { id } = req.params
@@ -82,5 +105,7 @@ module.exports = {
   BuscarSuscripcion,
   AgregarSuscripcion,
   ModificarSuscripcion,
-  EliminarSuscripcion
+  EliminarSuscripcion,
+  ListaReporteSuscripciones,
+  ListarReportesPorRenovacion
 }
