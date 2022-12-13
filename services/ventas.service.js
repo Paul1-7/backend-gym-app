@@ -1,9 +1,27 @@
+const { Op } = require('sequelize')
 const { models } = require('../libs/sequelize.js')
 
 async function ListarVentas() {
   return await models.Ventas.findAll({
     include: ['socio', 'vendedor']
   })
+}
+
+async function ListarVentasPersonalizada({ fechaInicio, fechaFin }) {
+  const options = { include: ['socio', 'vendedor'] }
+  const isRange = fechaInicio && fechaFin
+
+  if (isRange) {
+    options.where = {
+      fecha: { [Op.between]: [fechaInicio, fechaFin] }
+    }
+  }
+
+  options.where = {
+    fecha: { [Op.gte]: fechaInicio }
+  }
+
+  return await models.Ventas.findAll(options)
 }
 
 async function BuscarVenta(id) {
@@ -22,7 +40,7 @@ async function BuscarVenta(id) {
 }
 
 async function AgregarVenta(venta) {
-  return await models.Ventas.create(venta)
+  return await (await models.Ventas.create(venta)).toJSON()
 }
 
 async function ModificarVenta(id, cambio) {
@@ -40,5 +58,6 @@ module.exports = {
   BuscarVenta,
   AgregarVenta,
   ModificarVenta,
-  EliminarVenta
+  EliminarVenta,
+  ListarVentasPersonalizada
 }

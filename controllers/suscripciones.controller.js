@@ -41,6 +41,24 @@ const ListaReporteSuscripciones = async (req, res, next) => {
   }
 }
 
+const ReporteDeResultados = async (req, res, next) => {
+  try {
+    const planMasSolicitado = await services.ObtenerPlanMasSolicitado()
+    const socioMayorSuscripcion = await services.ObtenerSocioMayorSuscripcion()
+    const numSucripcionesActivas =
+      await services.ObtenerNumSuscripcionesActivas()
+    const promRenovaciones = await services.ObtenerPromRenovacionSusc()
+    res.json({
+      planMasSolicitado,
+      socioMayorSuscripcion,
+      numSucripcionesActivas,
+      promRenovaciones
+    })
+  } catch (error) {
+    next(error)
+  }
+}
+
 const BuscarSuscripcion = async (req, res, next) => {
   try {
     const { id } = req.params
@@ -107,5 +125,6 @@ module.exports = {
   ModificarSuscripcion,
   EliminarSuscripcion,
   ListaReporteSuscripciones,
-  ListarReportesPorRenovacion
+  ListarReportesPorRenovacion,
+  ReporteDeResultados
 }

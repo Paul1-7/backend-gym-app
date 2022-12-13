@@ -56,6 +56,13 @@ const VentasSchema = {
     },
     onUpdate: 'CASCADE',
     onDelete: 'SET NULL'
+  },
+  total: {
+    type: DataTypes.FLOAT,
+    allowNull: false,
+    validate: {
+      isFloat: msg.isFloat
+    }
   }
 }
 

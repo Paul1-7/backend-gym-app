@@ -15,9 +15,30 @@ const msg = {
   modifySuccess: 'Se actualizó el registró de la venta correctamente'
 }
 
+const obtenerTotalVenta = (detalle) => {
+  return detalle.reduce(
+    (sum, val) => sum + val.cantidad * val.precioAdquirido,
+    0
+  )
+}
+
 const ListarVentas = async (req, res, next) => {
   try {
     const venta = await services.ListarVentas()
+    res.json(venta)
+  } catch (error) {
+    next(error)
+  }
+}
+
+const ListarVentasParaReporte = async (req, res, next) => {
+  try {
+    const { query } = req
+
+    const venta = Object.keys(query).length
+      ? await services.ListarVentasPersonalizada(query)
+      : await services.ListarVentas()
+
     res.json(venta)
   } catch (error) {
     next(error)
@@ -54,20 +75,23 @@ const AgregarVenta = async (req, res, next) => {
     if (!newStock.every(({ stock }) => stock >= 0))
       return ERROR_RESPONSE.notAcceptable(msg.notValid, res)
 
-    const newSell = await services.AgregarVenta({ ...sell, fecha: new Date() })
-
-    const sellDetail = newStock.map((value) => {
+    let sellDetail = newStock.map((value) => {
       const product = productos.find((product) => product.id === value.id)
 
       const { precioVenta } = productosReq.find(({ id }) => id === value.id)
 
       return {
         idProd: product.id,
-        idVenta: newSell.toJSON().id,
         cantidad: product.cantidad,
         precioAdquirido: precioVenta
       }
     })
+    const newSell = await services.AgregarVenta({
+      ...sell,
+      fecha: new Date(),
+      total: obtenerTotalVenta(sellDetail)
+    })
+    sellDetail = sellDetail.map((sell) => ({ ...sell, idVenta: newSell.id }))
 
     await AgregarDetalleVenta(sellDetail)
     await ActualizarStockPorIds(newStock)
@@ -110,5 +134,6 @@ module.exports = {
   BuscarVenta,
   AgregarVenta,
   ModificarVenta,
-  EliminarVenta
+  EliminarVenta,
+  ListarVentasParaReporte
 }
