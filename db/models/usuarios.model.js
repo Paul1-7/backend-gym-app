@@ -84,9 +84,6 @@ const UsuariosSchema = {
     type: DataTypes.STRING,
     allowNull: true,
     defaultValue: null,
-    validate: {
-      is: msg.isAlphanumeric
-    }
   },
   estado: {
     type: DataTypes.INTEGER,

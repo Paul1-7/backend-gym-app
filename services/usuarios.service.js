@@ -2,6 +2,7 @@ const { Op } = require('sequelize')
 const { models } = require('../libs/sequelize.js')
 const msg = require('../utils/validationsMsg.js')
 const { eliminarRolUsuario } = require('./rolesUsuarios.services')
+const { hash } = require('bcrypt')
 
 async function obtenerUsuariosPorRol(active = false, ...rolNames) {
   const options = {
@@ -26,14 +27,14 @@ async function crearUsuario(User,options = {}) {
   return await models.Usuarios.create(User,options)
 }
 
-async function actualizarUsuario(id, changes) {
+async function actualizarUsuario(id, changes,options={}) {
   const { password } = changes
 
   const user = await models.Usuarios.findByPk(id)
-  // const newPassword =
-  //   password.length === 0 ? JSON.stringify(user).password : password
 
-  return await user?.update({ ...changes /*password: newPassword */ })
+  const passwordHashed = password !== '' ? await hash(password, 10): user.dataValues.password
+    
+  return await user?.update({ ...changes ,password: passwordHashed  },options)
 }
 
 async function borrarUsuario(id) {

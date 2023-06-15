@@ -2,13 +2,12 @@ const { SOCIO, RECEPCIONISTA, ENTRENADOR } = require('../config/roles')
 
 const agregarRolSocio = (allRoles, rolesUser) => {
   const rolSocio = allRoles
-    .filter((role) => role.nombre === SOCIO)
-    .map(({ id: idRol }) => ({ idRol }))
+  .filter((role) => role.nombre === SOCIO)
+  .map(({ id }) => (id))
 
   const existeRol =
-    rolesUser.find(({ idRol }) => idRol === rolSocio[0].idRol) ?? false
-
-  console.log(existeRol)
+  rolesUser?.find((idRol) => idRol === rolSocio[0].idRol)
+  
   return existeRol ? rolesUser : [...rolesUser, ...rolSocio]
 }
 
@@ -17,7 +16,7 @@ const agregarRolRecepcionista = (allRoles, rolesUser) => {
 
   const rolRecepcionista = allRoles
     .filter((role) => role.nombre === RECEPCIONISTA)
-    .map(({ id: idRol }) => ({ idRol }))
+    .map(({ id }) => (id))
 
   const existeRolEntrenador = rolesUser.includes(rolEntrenador.id)
   const existeRolRecepcionista = rolesUser.includes(rolRecepcionista.idRol)

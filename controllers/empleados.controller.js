@@ -1,3 +1,4 @@
+const { hash } = require('bcrypt')
 const {
   SOCIO,
   RECEPCIONISTA,
@@ -12,7 +13,7 @@ const {
 } = require('../services/disciplinas.service.js')
 
 const { obtenerRoles } = require('../services/roles.service.js')
-const { agregarRolUsuario } = require('../services/rolesUsuarios.services.js')
+const { agregarRolUsuario, actualizarRolUsuario } = require('../services/rolesUsuarios.services.js')
 
 const userServices = require('../services/usuarios.service.js')
 const {
@@ -26,6 +27,7 @@ const msg = {
   rolNotFound: 'Rol no encontrado',
   delete: 'Empleado eliminado',
   addSuccess: 'Empleado registrado correctamente',
+  modifySuccess: 'Empleado modificado correctamente',
   notValidDisciplina: 'La disciplina no es valida'
 }
 
@@ -49,10 +51,11 @@ const listarEmpleados = async (req, res, next) => {
 const buscarEmpleado = async (req, res, next) => {
   try {
     const { id } = req.params
-    const empleados = await userServices.findUser(id)
+    const empleados = await userServices.buscarUsuario(id)
 
     if (!empleados) return ERROR_RESPONSE.notFound(msg.employeeNotFound, res)
-    res.json(empleados)
+
+    res.json({...empleados.dataValues,password:''})
   } catch (error) {
     next(error)
   }
@@ -67,10 +70,10 @@ const crearEmpleado = async (req, res, next) => {
     const allRoles = await obtenerRoles()
 
     let newRoles = agregarRolSocio(allRoles, roles)
-    newRoles = agregarRolRecepcionista(allRoles, roles)
-    console.log("TCL: crearEmpleado -> newRoles", newRoles)
+    newRoles = agregarRolRecepcionista(allRoles, newRoles)
 
-    const empleado = await userServices.crearUsuario(dataUser,{transaction})
+     const passwordHashed = await hash(dataUser.password.toString(), 10)
+    const empleado = await userServices.crearUsuario({...dataUser,password:passwordHashed},{transaction})
 
     const rolObject = newRoles.map(idRol => ({idRol}))
 
@@ -83,30 +86,46 @@ const crearEmpleado = async (req, res, next) => {
   }
 }
 
-const updateUser = async (req, res, next) => {
+const modificarEmpleado = async (req, res, next) => {
+  const transaction = await sequelize.transaction()
   try {
     const { id } = req.params
     const { body } = req
     const { roles, ...dataUser } = body
 
-    const user = await userServices.updateUser(id, dataUser)
+    const empleado = await userServices.actualizarUsuario(id, dataUser,{transaction})
 
-    if (!user) return ERROR_RESPONSE.notFound(msg.employeeNotFound, res)
+    if (!empleado) return ERROR_RESPONSE.notFound(msg.employeeNotFound, res)
 
-    res.json(user)
+    const allRoles = await obtenerRoles()
+
+    let newRoles = agregarRolSocio(allRoles, roles)
+    newRoles = agregarRolRecepcionista(allRoles, newRoles)
+
+    const rolObject = newRoles.map(idRol => ({idRol}))
+    await actualizarRolUsuario(empleado.dataValues.id,rolObject,{transaction})
+
+    transaction.commit()
+    res.json({message:msg.modifySuccess})
   } catch (error) {
+    transaction.rollback()
     next(error)
   }
 }
 
-const deleteUser = async (req, res, next) => {
+const eliminarEmpleado = async (req, res, next) => {
   try {
     const { id } = req.params
-    const user = await empServices.deleteEmplooye(id)
 
-    if (!user) return ERROR_RESPONSE.notFound(msg.employeeNotFound, res)
+    const existeEmpleado = await userServices.buscarUsuario(id)
+    if (!existeEmpleado) return ERROR_RESPONSE.notFound(msg.notFound, res)
 
-    res.json({ message: msg.delete })
+    const socioBorrado = await userServices.borrarUsuario(id)
+
+    if (socioBorrado instanceof Error)
+      return ERROR_RESPONSE.notAcceptable(socioBorrado.message, res)
+
+    res.json({ message: msg.delete,id })
   } catch (error) {
     next(error)
   }
@@ -116,6 +135,6 @@ module.exports = {
   listarEmpleados,
   buscarEmpleado,
   crearEmpleado,
-  updateUser,
-  deleteUser
+  modificarEmpleado,
+  eliminarEmpleado
 }
