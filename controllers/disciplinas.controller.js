@@ -3,8 +3,9 @@ const services = require('../services/disciplinas.service.js')
 
 const msg = {
   notFound: 'Disciplina no encontrado',
-  delete: 'Disciplina eliminado',
-  addSuccess: 'Disciplina agregada correctamente'
+  deleteSuccess: 'Disciplina eliminada correctamente',
+  addSuccess: 'Disciplina agregada correctamente',
+  modifySuccess: 'Disciplina modificada correctamente'
 }
 
 const ListarDisciplinas = async (req, res, next) => {
@@ -46,7 +47,7 @@ const ModificarDisciplinas = async (req, res, next) => {
 
     if (!disciplinas) return ERROR_RESPONSE.notFound(msg.notFound, res)
 
-    res.json(disciplinas)
+    res.json({message:msg.modifySuccess})
   } catch (error) {
     next(error)
   }
@@ -55,11 +56,15 @@ const ModificarDisciplinas = async (req, res, next) => {
 const EliminarDisciplinas = async (req, res, next) => {
   try {
     const { id } = req.params
-    const disciplinas = await services.EliminarDisciplinas(id)
+    const existeDisciplina = await services.BuscarDisciplinas(id)
+    if (!existeDisciplina) return ERROR_RESPONSE.notFound(msg.notFound, res)
 
-    if (!disciplinas) return ERROR_RESPONSE.notFound(msg.notFound, res)
+    const disciplinaBorrado = await services.EliminarDisciplinas(id)
 
-    res.json({ message: msg.delete })
+    if (disciplinaBorrado instanceof Error)
+      return ERROR_RESPONSE.notAcceptable(disciplinaBorrado.message, res)
+
+    res.json({ message: msg.deleteSuccess,id })
   } catch (error) {
     next(error)
   }

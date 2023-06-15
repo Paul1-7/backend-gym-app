@@ -1,5 +1,6 @@
 const { Op } = require('sequelize')
 const { models } = require('../libs/sequelize.js')
+const msg = require('../utils/validationsMsg.js')
 
 async function ListarDisciplinas() {
   return await models.Disciplinas.findAll()
@@ -22,13 +23,21 @@ async function agregarDisciplina(disciplinas) {
 }
 
 async function ModificarDisciplinas(id, cambio) {
-  const user = await models.Disciplinas.findByPk(id)
-  return await user?.update(cambio)
+  const discipline = await models.Disciplinas.findByPk(id)
+  return await discipline?.update(cambio)
 }
 
 async function EliminarDisciplinas(id) {
-  const user = await models.Disciplinas.findByPk(id)
-  return await user?.destroy()
+  const discipline = await models.Disciplinas.findByPk(id,{
+    include:['horarios']
+  })
+
+  if (
+    discipline.horarios.length > 0 
+  )
+    return new Error(msg.msgErrorForeignKey)
+
+  return await discipline?.destroy()
 }
 
 module.exports = {
