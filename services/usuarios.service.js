@@ -22,8 +22,8 @@ async function buscarUsuario(id) {
   })
 }
 
-async function crearUsuario(User) {
-  return await models.Usuarios.create(User)
+async function crearUsuario(User,options = {}) {
+  return await models.Usuarios.create(User,options)
 }
 
 async function actualizarUsuario(id, changes) {

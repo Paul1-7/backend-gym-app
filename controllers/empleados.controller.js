@@ -5,11 +5,12 @@ const {
   ADMINiSTRADOR,
   LIMPIEZA
 } = require('../config/roles.js')
+const sequelize = require('../libs/sequelize.js')
 const { ERROR_RESPONSE } = require('../middlewares/error.handle.js')
 const {
   BuscarDisciplinasPorIds
 } = require('../services/disciplinas.service.js')
-const { agregarHorario } = require('../services/horarios.service.js')
+
 const { obtenerRoles } = require('../services/roles.service.js')
 const { agregarRolUsuario } = require('../services/rolesUsuarios.services.js')
 
@@ -58,28 +59,26 @@ const buscarEmpleado = async (req, res, next) => {
 }
 
 const crearEmpleado = async (req, res, next) => {
+  const transaction = await sequelize.transaction()
   try {
     const { body } = req
-    let { roles, ...dataUser } = body
+    const  { roles, ...dataUser } = body
 
     const allRoles = await obtenerRoles()
 
-    if (
-      !sonDatosValidos(allRoles, roles, 'id', 'idRol') ||
-      roles?.length === 0 ||
-      typeof roles === 'undefined'
-    )
-      return ERROR_RESPONSE.notFound(msg.rolNotFound, res)
+    let newRoles = agregarRolSocio(allRoles, roles)
+    newRoles = agregarRolRecepcionista(allRoles, roles)
+    console.log("TCL: crearEmpleado -> newRoles", newRoles)
 
-    roles = agregarRolSocio(allRoles, roles)
-    roles = agregarRolRecepcionista(allRoles, roles)
+    const empleado = await userServices.crearUsuario(dataUser,{transaction})
 
-    const empleado = await userServices.crearUsuario(dataUser)
+    const rolObject = newRoles.map(idRol => ({idRol}))
 
-    await agregarRolUsuario(empleado.dataValues.id, roles)
-
+    await agregarRolUsuario(empleado.dataValues.id, rolObject,{transaction})
+    transaction.commit()
     res.json({ message: msg.addSuccess })
   } catch (error) {
+    transaction.rollback()
     next(error)
   }
 }

@@ -8,6 +8,7 @@ const { agregarRolUsuario } = require('../services/rolesUsuarios.services.js')
 const { BuscarPlan } = require('../services/planes.service.js')
 const { agregarDiasAFecha } = require('../utils/dataHandler.js')
 const { AgregarSuscripcion } = require('../services/suscripciones.service.js')
+const sequelize = require('../libs/sequelize.js')
 
 const msg = {
   notFound: 'Socio no encontrado',
@@ -40,15 +41,14 @@ const BuscarSocios = async (req, res, next) => {
 }
 
 const AgregarSocios = async (req, res, next) => {
-  try {
-    const { body } = req
-    const { idPlan, cantidad, ...socio } = body
-
+    const transaction = await sequelize.transaction()
+    try {
+    const { idPlan, cantidad, ...socio } =req.body
     const rolSocio = await buscarRolPorNombre(SOCIO)
 
     const { id: idRol } = rolSocio
 
-    const newsocios = await services.crearUsuario(socio)
+    const newsocios = await services.crearUsuario(socio,{transaction})
 
     const plan = await BuscarPlan(idPlan)
     if (plan) {
@@ -60,12 +60,14 @@ const AgregarSocios = async (req, res, next) => {
         fechaFin: agregarDiasAFecha(plan.duracion),
         montoCancelado: plan.precio * cantidad
       }
-      await AgregarSuscripcion(newSuscripcion)
+      await AgregarSuscripcion(newSuscripcion,{transaction})
     }
 
-    await agregarRolUsuario(newsocios.dataValues.id, [{ idRol }])
+    await agregarRolUsuario(newsocios.dataValues.id, [{ idRol }],{transaction})
+    await transaction.commit()
     res.json({ message: msg.addSuccess })
   } catch (error) {
+    await transaction.rollback()
     next(error)
   }
 }

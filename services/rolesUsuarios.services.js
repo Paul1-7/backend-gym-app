@@ -1,12 +1,12 @@
 const { models } = require('../libs/sequelize.js')
 
-async function agregarRolUsuario(idUsuario, roles) {
+async function agregarRolUsuario(idUsuario, roles,options={}) {
   const dataRolUser = []
   roles.forEach((role) => {
     dataRolUser.push({ idUsuario, ...role })
   })
 
-  return await models.Roles_Usuarios.bulkCreate(dataRolUser)
+  return await models.Roles_Usuarios.bulkCreate(dataRolUser,options)
 }
 
 async function eliminarRolUsuario(idUsuario) {

@@ -45,7 +45,7 @@ const SuscripcionSchema = {
     onDelete: 'SET NULL'
   },
   fechaInicio: {
-    type: DataTypes.DATEONLY,
+    type: DataTypes.DATE,
     field: 'fecha_inicio',
     allowNull: false,
     validate: {
@@ -54,7 +54,7 @@ const SuscripcionSchema = {
     }
   },
   fechaFin: {
-    type: DataTypes.DATEONLY,
+    type: DataTypes.DATE,
     field: 'fecha_fin',
     allowNull: false,
     validate: {

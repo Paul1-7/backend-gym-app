@@ -13,15 +13,14 @@ const agregarRolSocio = (allRoles, rolesUser) => {
 }
 
 const agregarRolRecepcionista = (allRoles, rolesUser) => {
-  const idRolesUser = rolesUser.map(({ idRol }) => idRol)
   const rolEntrenador = allRoles.find(({ nombre }) => nombre === ENTRENADOR)
 
   const rolRecepcionista = allRoles
     .filter((role) => role.nombre === RECEPCIONISTA)
     .map(({ id: idRol }) => ({ idRol }))
 
-  const existeRolEntrenador = idRolesUser.includes(rolEntrenador.id)
-  const existeRolRecepcionista = idRolesUser.includes(rolRecepcionista.idRol)
+  const existeRolEntrenador = rolesUser.includes(rolEntrenador.id)
+  const existeRolRecepcionista = rolesUser.includes(rolRecepcionista.idRol)
 
   if (existeRolEntrenador && existeRolRecepcionista) return rolesUser
   if (existeRolEntrenador) return [...rolesUser, ...rolRecepcionista]
