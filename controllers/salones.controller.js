@@ -3,8 +3,10 @@ const services = require('../services/salones.service.js')
 
 const msg = {
   notFound: 'Salón no encontrado',
-  delete: 'Salón eliminado',
-  addSuccess: 'Salón agregado correctamente'
+  deleteSuccess: 'Salón eliminado',
+  addSuccess: 'Salón agregado correctamente',
+    modifySuccess: 'Salón modificado correctamente'
+
 }
 
 const ListarSalon = async (req, res, next) => {
@@ -54,12 +56,16 @@ const ModificarSalon = async (req, res, next) => {
 
 const EliminarSalon = async (req, res, next) => {
   try {
-    const { id } = req.params
-    const salon = await services.EliminarSalon(id)
+     const { id } = req.params
+    const existeSalon = await services.BuscarSalon(id)
+    if (!existeSalon) return ERROR_RESPONSE.notFound(msg.notFound, res)
 
-    if (!salon) return ERROR_RESPONSE.notFound(msg.notFound, res)
+    const salonBorrado = await services.EliminarSalon(id)
 
-    res.json({ message: msg.delete })
+    if (salonBorrado instanceof Error)
+      return ERROR_RESPONSE.notAcceptable(salonBorrado.message, res)
+
+    res.json({ message: msg.deleteSuccess,id })
   } catch (error) {
     next(error)
   }

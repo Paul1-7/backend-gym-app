@@ -1,5 +1,6 @@
 const { Op } = require('sequelize')
 const { models } = require('../libs/sequelize.js')
+const msg = require('../utils/validationsMsg.js')
 
 async function ListarSalones() {
   return await models.Salones.findAll()
@@ -27,7 +28,15 @@ async function ModificarSalon(id, cambio) {
 }
 
 async function EliminarSalon(id) {
-  const salon = await models.Salones.findByPk(id)
+  const salon = await models.Salones.findByPk(id,{
+    include:['horarios']
+  })
+
+  if (
+    salon.horarios.length > 0 
+  )
+    return new Error(msg.msgErrorForeignKey)
+
   return await salon?.destroy()
 }
 
