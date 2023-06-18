@@ -3,8 +3,9 @@ const services = require('../services/productos.service.js')
 
 const msg = {
   notFound: 'Producto no encontrado',
-  delete: 'Producto eliminado',
-  addSuccess: 'Producto agregado correctamente'
+  deleteSuccess: 'Producto eliminado',
+  addSuccess: 'Producto agregado correctamente',
+  modifySuccess: 'Producto modificado correctamente'
 }
 
 const ListarProductos = async (req, res, next) => {
@@ -42,11 +43,11 @@ const ModificarProducto = async (req, res, next) => {
   try {
     const { id } = req.params
     const { body } = req
-    const salon = await services.ModificarProducto(id, body)
+    const producto = await services.ModificarProducto(id, body)
 
-    if (!salon) return ERROR_RESPONSE.notFound(msg.notFound, res)
+    if (!producto) return ERROR_RESPONSE.notFound(msg.notFound, res)
 
-    res.json(salon)
+    res.json({message:msg.modifySuccess})
   } catch (error) {
     next(error)
   }
@@ -54,12 +55,16 @@ const ModificarProducto = async (req, res, next) => {
 
 const EliminarProducto = async (req, res, next) => {
   try {
-    const { id } = req.params
-    const salon = await services.EliminarProducto(id)
+   const { id } = req.params
+    const existeProducto = await services.BuscarProducto(id)
+    if (!existeProducto) return ERROR_RESPONSE.notFound(msg.notFound, res)
 
-    if (!salon) return ERROR_RESPONSE.notFound(msg.notFound, res)
+    const productoBorrado = await services.EliminarProducto(id)
 
-    res.json({ message: msg.delete })
+    if (productoBorrado instanceof Error)
+      return ERROR_RESPONSE.notAcceptable(productoBorrado.message, res)
+
+    res.json({ message: msg.deleteSuccess,id })
   } catch (error) {
     next(error)
   }

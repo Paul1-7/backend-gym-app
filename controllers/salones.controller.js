@@ -48,7 +48,7 @@ const ModificarSalon = async (req, res, next) => {
 
     if (!salon) return ERROR_RESPONSE.notFound(msg.notFound, res)
 
-    res.json(salon)
+    res.json({message: msg.modifySuccess})
   } catch (error) {
     next(error)
   }
