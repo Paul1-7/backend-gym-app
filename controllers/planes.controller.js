@@ -3,8 +3,9 @@ const services = require('../services/planes.service.js')
 
 const msg = {
   notFound: 'Plan no encontrado',
-  delete: 'Plan eliminado',
-  addSuccess: 'Plan agregado correctamente'
+  deleteSuccess: 'Plan eliminado',
+  addSuccess: 'Plan agregado correctamente',
+  modifySuccess: 'Plan modificado correctamente'
 }
 
 const ListarPlanes = async (req, res, next) => {
@@ -46,7 +47,7 @@ const ModificarPlan = async (req, res, next) => {
 
     if (!plan) return ERROR_RESPONSE.notFound(msg.notFound, res)
 
-    res.json(plan)
+    res.json({message:msg.modifySuccess})
   } catch (error) {
     next(error)
   }
@@ -55,11 +56,16 @@ const ModificarPlan = async (req, res, next) => {
 const EliminarPlan = async (req, res, next) => {
   try {
     const { id } = req.params
-    const plan = await services.EliminarPlan(id)
+    const existePlan = await services.BuscarPlan(id)
+    if (!existePlan) return ERROR_RESPONSE.notFound(msg.notFound, res)
 
-    if (!plan) return ERROR_RESPONSE.notFound(msg.notFound, res)
+    const planBorrado = await services.EliminarPlan(id)
 
-    res.json({ message: msg.delete })
+    if (planBorrado instanceof Error)
+      return ERROR_RESPONSE.notAcceptable(planBorrado.message, res)
+
+
+    res.json({ message: msg.deleteSuccess,id })
   } catch (error) {
     next(error)
   }

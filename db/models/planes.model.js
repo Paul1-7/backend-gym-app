@@ -59,7 +59,7 @@ const PlanesSchema = {
 class Planes extends Model {
   static associate(models) {
     this.hasMany(models.Suscripciones, {
-      as: 'sucripciones',
+      as: 'suscripciones',
       foreignKey: 'idPlan'
     })
   }
