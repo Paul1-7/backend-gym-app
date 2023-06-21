@@ -1,6 +1,8 @@
 const { Op, QueryTypes } = require('sequelize')
 const sequelize = require('../libs/sequelize.js')
 const { models } = require('../libs/sequelize.js')
+const { verificarSuscripcionActiva } = require('../utils/dataHandler.js')
+const { differenceInDays, add } = require('date-fns')
 
 async function SuscripcionesEntreFechas({ fechaInicio, fechaFin }) {
   return await models.Suscripciones.findAll({
@@ -76,8 +78,24 @@ async function BuscarSuscripcion(id) {
   return await models.Suscripciones.findByPk(id)
 }
 
-async function AgregarSuscripcion(suscripcion,options={}) {
-  return await models.Suscripciones.create(suscripcion,options)
+async function AgregarSuscripcion(suscripcion, options = {}) {
+  const { idSocio, fechaFin } = suscripcion
+  const ultimaSucripcion = await ObtenerUltimaSucripcion(idSocio)
+  const hasSuscription = verificarSuscripcionActiva(ultimaSucripcion?.fechaFin)
+
+  const extraDays = ultimaSucripcion
+    ? differenceInDays(ultimaSucripcion.fechaFin, new Date())
+    : 0
+
+  const newSuscription = hasSuscription
+    ? {
+        ...suscripcion,
+        diasExtras: extraDays,
+        fechaFin: add(fechaFin, { days: extraDays })
+      }
+    : suscripcion
+
+  return await models.Suscripciones.create(newSuscription, options)
 }
 
 async function ModificarSuscripcion(id, cambio) {
@@ -85,9 +103,18 @@ async function ModificarSuscripcion(id, cambio) {
   return await salon?.update(cambio)
 }
 
-async function EliminarSuscripcion(id) {
-  const salon = await models.Suscripciones.findByPk(id)
-  return await salon?.destroy()
+async function ObtenerUltimaSucripcion(idSocio) {
+  const ultimaSuscripcion = await models.Suscripciones.findOne({
+    where: { idSocio },
+    order: [
+      ['fechaFin', 'DESC'],
+      ['id', 'DESC']
+    ]
+  })
+
+  if (!ultimaSuscripcion) return null
+
+  return ultimaSuscripcion.toJSON()
 }
 
 module.exports = {
@@ -95,11 +122,11 @@ module.exports = {
   BuscarSuscripcion,
   AgregarSuscripcion,
   ModificarSuscripcion,
-  EliminarSuscripcion,
   SuscripcionesEntreFechas,
   SociosPorRenovacionSuscripciones,
   ObtenerPlanMasSolicitado,
   ObtenerSocioMayorSuscripcion,
   ObtenerNumSuscripcionesActivas,
-  ObtenerPromRenovacionSusc
+  ObtenerPromRenovacionSusc,
+  ObtenerUltimaSucripcion
 }

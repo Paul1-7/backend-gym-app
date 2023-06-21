@@ -52,10 +52,19 @@ const obtenerNuevoStock = (allProduct, bodyProducts) => {
   })
 }
 
+const verificarSuscripcionActiva = (dateEnd) =>{
+
+  if(!dateEnd) return false
+
+  const dateNow = new Date();
+  return dateEnd > dateNow;
+}
+
 module.exports = {
   agregarRolSocio,
   agregarRolRecepcionista,
   sonDatosValidos,
   agregarDiasAFecha,
-  obtenerNuevoStock
+  obtenerNuevoStock,
+  verificarSuscripcionActiva
 }

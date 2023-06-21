@@ -70,6 +70,21 @@ const BuscarSuscripcion = async (req, res, next) => {
     next(error)
   }
 }
+const BuscarUltimaSuscripcion = async (req, res, next) => {
+  try {
+    const { idSocio } = req.params
+    const lastSubscription = await services.ObtenerUltimaSucripcion(idSocio)
+
+    if (!lastSubscription) return res.json({ id: null, daysRemaining: null })
+
+    res.json({
+      id: lastSubscription.id,
+      daysRemaining: lastSubscription.diasExtras
+    })
+  } catch (error) {
+    next(error)
+  }
+}
 
 const AgregarSuscripcion = async (req, res, next) => {
   try {
@@ -126,5 +141,6 @@ module.exports = {
   EliminarSuscripcion,
   ListaReporteSuscripciones,
   ListarReportesPorRenovacion,
-  ReporteDeResultados
+  ReporteDeResultados,
+  BuscarUltimaSuscripcion
 }

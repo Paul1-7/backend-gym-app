@@ -86,7 +86,13 @@ const SuscripcionSchema = {
     validate: {
       is: msg.isState
     }
-  }
+  },
+  diasExtras: {
+    field:'dias_extras',
+    type: DataTypes.INTEGER,
+    allowNull: false,
+    defaultValue: 0,
+  },
 }
 
 class Suscripcion extends Model {

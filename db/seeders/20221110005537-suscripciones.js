@@ -13,6 +13,7 @@ module.exports = {
           fecha_fin: '2023-02-07',
           cantidad: 1,
           monto_cancelado: 280,
+          dias_extras:0,
           estado: 1
         },
         {
@@ -23,6 +24,7 @@ module.exports = {
           fecha_fin: '2022-12-09',
           cantidad: 1,
           monto_cancelado: 150,
+          dias_extras:0,
           estado: 1
         }
       ],
