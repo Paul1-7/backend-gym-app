@@ -1,7 +1,10 @@
 const { ERROR_RESPONSE } = require('../middlewares/error.handle.js')
 const { BuscarPlan } = require('../services/planes.service.js')
 const services = require('../services/suscripciones.service.js')
-const { agregarDiasAFecha } = require('../utils/dataHandler.js')
+const {
+  agregarDiasAFecha,
+  obtenerDiasRestantes
+} = require('../utils/dataHandler.js')
 
 const msg = {
   notFound: 'Suscripcion no encontrado',
@@ -79,7 +82,7 @@ const BuscarUltimaSuscripcion = async (req, res, next) => {
 
     res.json({
       id: lastSubscription.id,
-      daysRemaining: lastSubscription.diasExtras
+      daysRemaining: obtenerDiasRestantes(lastSubscription.fechaFin)
     })
   } catch (error) {
     next(error)

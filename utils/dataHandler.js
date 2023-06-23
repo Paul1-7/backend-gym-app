@@ -1,13 +1,13 @@
+const { isFuture, differenceInDays } = require('date-fns')
 const { SOCIO, RECEPCIONISTA, ENTRENADOR } = require('../config/roles')
 
 const agregarRolSocio = (allRoles, rolesUser) => {
   const rolSocio = allRoles
-  .filter((role) => role.nombre === SOCIO)
-  .map(({ id }) => (id))
+    .filter((role) => role.nombre === SOCIO)
+    .map(({ id }) => id)
 
-  const existeRol =
-  rolesUser?.find((idRol) => idRol === rolSocio[0].idRol)
-  
+  const existeRol = rolesUser?.find((idRol) => idRol === rolSocio[0].idRol)
+
   return existeRol ? rolesUser : [...rolesUser, ...rolSocio]
 }
 
@@ -16,7 +16,7 @@ const agregarRolRecepcionista = (allRoles, rolesUser) => {
 
   const rolRecepcionista = allRoles
     .filter((role) => role.nombre === RECEPCIONISTA)
-    .map(({ id }) => (id))
+    .map(({ id }) => id)
 
   const existeRolEntrenador = rolesUser.includes(rolEntrenador.id)
   const existeRolRecepcionista = rolesUser.includes(rolRecepcionista.idRol)
@@ -52,12 +52,18 @@ const obtenerNuevoStock = (allProduct, bodyProducts) => {
   })
 }
 
-const verificarSuscripcionActiva = (dateEnd) =>{
+const verificarSuscripcionActiva = (dateEnd) => {
+  if (!dateEnd) return false
 
-  if(!dateEnd) return false
+  const dateNow = new Date()
+  return dateEnd > dateNow
+}
 
-  const dateNow = new Date();
-  return dateEnd > dateNow;
+const obtenerDiasRestantes = (date) => {
+  const dateNow = new Date()
+  const laterDate = new Date(date)
+
+  return isFuture(laterDate) ? differenceInDays(laterDate, dateNow) : 0
 }
 
 module.exports = {
@@ -66,5 +72,6 @@ module.exports = {
   sonDatosValidos,
   agregarDiasAFecha,
   obtenerNuevoStock,
-  verificarSuscripcionActiva
+  verificarSuscripcionActiva,
+  obtenerDiasRestantes
 }
