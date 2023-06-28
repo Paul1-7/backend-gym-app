@@ -1,4 +1,4 @@
-const { isFuture, differenceInDays } = require('date-fns')
+const { isFuture, differenceInDays, format } = require('date-fns')
 const { SOCIO, RECEPCIONISTA, ENTRENADOR } = require('../config/roles')
 
 const agregarRolSocio = (allRoles, rolesUser) => {
@@ -66,6 +66,12 @@ const obtenerDiasRestantes = (date) => {
   return isFuture(laterDate) ? differenceInDays(laterDate, dateNow) : 0
 }
 
+function generateCodeToDocuments(letter, secuencialNumber) {
+  const numberPad = (secuencialNumber + 1).toString().padStart(4, '0')
+  const today = format(new Date(), 'yyyyMMdd')
+  return `${letter}-${today}-${numberPad}`
+}
+
 module.exports = {
   agregarRolSocio,
   agregarRolRecepcionista,
@@ -73,5 +79,6 @@ module.exports = {
   agregarDiasAFecha,
   obtenerNuevoStock,
   verificarSuscripcionActiva,
-  obtenerDiasRestantes
+  obtenerDiasRestantes,
+  generateCodeToDocuments
 }

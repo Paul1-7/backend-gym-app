@@ -40,19 +40,6 @@ const HorariosSchema = {
     type: DataTypes.STRING,
     field: 'horario_salida'
   },
-  dia: {
-    allowNull: false,
-    type: DataTypes.STRING
-  },
-  cupoRestante: {
-    allowNull: false,
-    type: DataTypes.INTEGER,
-    field: 'cupo_restante',
-    validate: {
-      isNumeric: msg.isNumeric,
-      notNull: msg.notNull
-    }
-  },
   idSalon: {
     allowNull: false,
     type: DataTypes.STRING,

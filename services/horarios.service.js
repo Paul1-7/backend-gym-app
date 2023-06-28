@@ -1,21 +1,21 @@
 const { models } = require('../libs/sequelize.js')
 
-async function agregarHorario(data) {
-  return await models.Horarios.bulkCreate(data)
+async function agregarHorario(data, options = {}) {
+  return await models.Horarios.create(data, options)
 }
 
 async function ListarHorarios() {
   return await models.Horarios.findAll({
-    include: ['salon', 'disciplina', 'entrenador']
+    include: ['salon', 'disciplina', 'entrenador'],
+    where: {
+      estado: 1
+    }
   })
 }
 
-async function eliminarHorarios(CodSocios) {
-  return await models.Horarios.destroy({
-    where: {
-      CodSocios
-    }
-  })
+async function eliminarHorarios(id) {
+  const schedule = await models.Horarios.findByPk(id)
+  return schedule.update({ estado: 0 })
 }
 
 async function buscarHorario(id) {
@@ -26,10 +26,9 @@ async function buscarHorario(id) {
   })
 }
 
-async function modificarHorarios(CodSocios, data) {
-  const removed = await eliminarHorarios(CodSocios)
-  const result = removed > 0 ? await models.Horarios.bulkCreate(data) : null
-  return result
+async function modificarHorarios(id, data) {
+  const schedule = await models.Horarios.findByPk(id)
+  return schedule.update(data)
 }
 
 module.exports = {

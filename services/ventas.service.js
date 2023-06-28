@@ -1,9 +1,22 @@
 const { Op } = require('sequelize')
 const { models } = require('../libs/sequelize.js')
+const { format } = require('date-fns')
 
 async function ListarVentas() {
   return await models.Ventas.findAll({
     include: ['socio', 'vendedor']
+  })
+}
+
+async function ContarCodigoVenta() {
+  const today = format(new Date(), 'yyyyMMdd')
+  const pattern = `V-${today}%`
+  return await models.Ventas.count({
+    where: {
+      codVenta: {
+        [Op.like]: pattern
+      }
+    }
   })
 }
 
@@ -59,5 +72,6 @@ module.exports = {
   AgregarVenta,
   ModificarVenta,
   EliminarVenta,
-  ListarVentasPersonalizada
+  ListarVentasPersonalizada,
+  ContarCodigoVenta
 }

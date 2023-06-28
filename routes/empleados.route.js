@@ -4,13 +4,15 @@ const {
   buscarEmpleado,
   crearEmpleado,
   modificarEmpleado,
-  eliminarEmpleado
+  eliminarEmpleado,
+  listarEntrenadores
 } = require('../controllers/empleados.controller.js')
 const { checkId } = require('../middlewares/validator.handle.js')
 
 const Empleados = express.Router()
 
 Empleados.get('/', listarEmpleados)
+Empleados.get('/entrenadores', listarEntrenadores)
 Empleados.get('/:id', checkId, buscarEmpleado)
 Empleados.post('/', crearEmpleado)
 Empleados.put('/:id', checkId, modificarEmpleado)

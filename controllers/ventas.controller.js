@@ -5,7 +5,10 @@ const {
   ActualizarStockPorIds
 } = require('../services/productos.service.js')
 const services = require('../services/ventas.service')
-const { obtenerNuevoStock } = require('../utils/dataHandler.js')
+const {
+  obtenerNuevoStock,
+  generateCodeToDocuments
+} = require('../utils/dataHandler.js')
 
 const msg = {
   notFound: 'Venta no encontrada',
@@ -66,6 +69,7 @@ const AgregarVenta = async (req, res, next) => {
     const productsId = productos.map((product) => product.id)
 
     const productosReq = await BuscarProductosPorIds(productsId)
+    const numberSaleCode = await services.ContarCodigoVenta()
 
     if (productosReq.length !== productos.length)
       return ERROR_RESPONSE.notAcceptable(msg.notValid, res)
@@ -89,7 +93,8 @@ const AgregarVenta = async (req, res, next) => {
     const newSell = await services.AgregarVenta({
       ...sell,
       fecha: new Date(),
-      total: obtenerTotalVenta(sellDetail)
+      total: obtenerTotalVenta(sellDetail),
+      codVenta: generateCodeToDocuments('V', numberSaleCode)
     })
     sellDetail = sellDetail.map((sell) => ({ ...sell, idVenta: newSell.id }))
 

@@ -4,7 +4,9 @@ const services = require('../services/horarios.service.js')
 const msg = {
   notFound: 'horario no encontrado',
   notFoundEmpleado: 'empleado no encontrado',
-  addSuccess: 'Horarios actualizados correctamente'
+  addSuccess: 'horario agregado correctamente',
+  modifySuccess: 'horario modificado correctamente',
+  deleteSuccess: 'horario eliminado correctamente'
 }
 
 const listarHorarios = async (req, res, next) => {
@@ -28,6 +30,16 @@ const buscarHorarios = async (req, res, next) => {
   }
 }
 
+const agregarHorario = async (req, res, next) => {
+  try {
+    const { body } = req
+    await services.agregarHorario(body)
+    res.json({ message: msg.addSuccess })
+  } catch (error) {
+    next(error)
+  }
+}
+
 const modificarHorario = async (req, res, next) => {
   try {
     const { id } = req.params
@@ -37,7 +49,18 @@ const modificarHorario = async (req, res, next) => {
 
     if (!horario) return ERROR_RESPONSE.notFound(msg.notFoundEmpleado, res)
 
-    res.json({ message: msg.addSuccess })
+    res.json({ message: msg.modifySuccess })
+  } catch (error) {
+    next(error)
+  }
+}
+
+const eliminarHorario = async (req, res, next) => {
+  try {
+    const { id } = req.params
+    await services.eliminarHorarios(id)
+
+    res.json({ message: msg.deleteSuccess, id })
   } catch (error) {
     next(error)
   }
@@ -46,5 +69,7 @@ const modificarHorario = async (req, res, next) => {
 module.exports = {
   listarHorarios,
   modificarHorario,
-  buscarHorarios
+  buscarHorarios,
+  agregarHorario,
+  eliminarHorario
 }

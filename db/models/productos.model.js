@@ -83,6 +83,12 @@ const ProductosSchema = {
     validate: {
       is: msg.isState
     }
+  },
+  tieneVencimiento: {
+    field: 'tiene_vencimiento',
+    type: DataTypes.BOOLEAN,
+    comment: 'informacion si tine vencimiento producto',
+    allowNull: false
   }
 }
 

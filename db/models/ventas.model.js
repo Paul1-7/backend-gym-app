@@ -16,14 +16,18 @@ const VentasSchema = {
       isUUID: 4
     }
   },
+  codVenta: {
+    allowNull: false,
+    comment: 'codigo de la venta',
+    type: DataTypes.STRING,
+    field: 'cod_venta'
+  },
   fecha: {
     comment: 'fecha de la venta',
-
     type: DataTypes.DATE,
-    allowNull: false,
+    allowNull: true,
     validate: {
-      isDate: msg.isDate,
-      notNull: msg.notNull
+      isDate: msg.isDate
     }
   },
   idSocio: {
