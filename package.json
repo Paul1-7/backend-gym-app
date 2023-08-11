@@ -1,41 +1,42 @@
 {
-    "name": "project-steven",
-    "version": "1.0.0",
-    "description": "",
-    "main": "index.js",
-    "scripts": {
-        "dev": "nodemon index.js",
-        "start": "node index.js",
-        "migrations:generate": "sequelize-cli migration:generate --name",
-        "migrations:run": "sequelize-cli db:migrate",
-        "migrations:undo": "sequelize-cli db:migrate:undo",
-        "migrations:delete": "sequelize-cli db:migrate:undo:all",
-        "seeds:generate": "sequelize-cli seed:generate --name",
-        "seeds:run": "sequelize-cli db:seed:all",
-        "seeds:delete": "sequelize-cli db:seed:undo:all"
-    },
-    "keywords": [],
-    "author": "",
-    "license": "ISC",
-    "dependencies": {
-        "bcrypt": "^5.1.0",
-        "cloudinary": "^1.37.1",
-        "cors": "^2.8.5",
-        "date-fns": "^2.30.0",
-        "dotenv": "^16.1.4",
-        "express": "^4.18.2",
-        "express-fileupload": "^1.4.0",
-        "fs-extra": "^10.1.0",
-        "pg": "^8.11.0",
-        "pg-hstore": "^2.3.4",
-        "sequelize": "^6.32.0",
-        "sequelize-cli": "^6.6.1"
-    },
-    "devDependencies": {
-        "eslint": "^8.42.0",
-        "eslint-config-google": "^0.14.0",
-        "eslint-config-prettier": "^8.8.0",
-        "eslint-plugin-prettier": "^4.2.1",
-        "prettier": "2.8.8"
-    }
+  "name": "project-steven",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "dev": "nodemon index.js",
+    "start": "node index.js",
+    "db:restart": "npm run migrations:delete && npm run migrations:run && npm run seeds:run",
+    "migrations:generate": "sequelize-cli migration:generate --name",
+    "migrations:run": "sequelize-cli db:migrate",
+    "migrations:undo": "sequelize-cli db:migrate:undo",
+    "migrations:delete": "sequelize-cli db:migrate:undo:all",
+    "seeds:generate": "sequelize-cli seed:generate --name",
+    "seeds:run": "sequelize-cli db:seed:all",
+    "seeds:delete": "sequelize-cli db:seed:undo:all"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "bcrypt": "^5.1.0",
+    "cloudinary": "^1.37.1",
+    "cors": "^2.8.5",
+    "date-fns": "^2.30.0",
+    "dotenv": "^16.1.4",
+    "express": "^4.18.2",
+    "express-fileupload": "^1.4.0",
+    "fs-extra": "^10.1.0",
+    "pg": "^8.11.0",
+    "pg-hstore": "^2.3.4",
+    "sequelize": "^6.32.0",
+    "sequelize-cli": "^6.6.1"
+  },
+  "devDependencies": {
+    "eslint": "^8.42.0",
+    "eslint-config-google": "^0.14.0",
+    "eslint-config-prettier": "^8.8.0",
+    "eslint-plugin-prettier": "^4.2.1",
+    "prettier": "2.8.8"
+  }
 }
