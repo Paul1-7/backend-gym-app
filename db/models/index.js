@@ -17,6 +17,7 @@ const {
   DetalleVentasSchema
 } = require('./detalleVentas.model.js')
 const { Programacion, ProgramacionSchema } = require('./programacion.model.js')
+const { Equipment, EquipmentSchema } = require('./maquinarias.model.js')
 
 function setUpModels(sequelize) {
   Usuarios.init(UsuariosSchema, Usuarios.config(sequelize))
@@ -31,6 +32,7 @@ function setUpModels(sequelize) {
   Ventas.init(VentasSchema, Ventas.config(sequelize))
   DetalleVentas.init(DetalleVentasSchema, DetalleVentas.config(sequelize))
   Programacion.init(ProgramacionSchema, Programacion.config(sequelize))
+  Equipment.init(EquipmentSchema, Equipment.config(sequelize))
 
   Usuarios.associate(sequelize.models)
   Horarios.associate(sequelize.models)

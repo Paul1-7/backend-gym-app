@@ -13,6 +13,7 @@ const { PlanesSchema } = require('../models/planes.model')
 const { VentasSchema } = require('../models/ventas.model')
 const { DetalleVentasSchema } = require('../models/detalleVentas.model')
 const { ProgramacionSchema } = require('../models/programacion.model')
+const { EquipmentSchema } = require('../models/maquinarias.model')
 
 module.exports = {
   async up(queryInterface) {
@@ -28,6 +29,7 @@ module.exports = {
     await queryInterface.createTable('Ventas', VentasSchema)
     await queryInterface.createTable('Detalle_Ventas', DetalleVentasSchema)
     await queryInterface.createTable('Programacion', ProgramacionSchema)
+    await queryInterface.createTable('Maquinarias', EquipmentSchema)
   },
 
   async down(queryInterface) {
@@ -43,5 +45,6 @@ module.exports = {
     await queryInterface.dropTable('Salones')
     await queryInterface.dropTable('Productos')
     await queryInterface.dropTable('Planes')
+    await queryInterface.dropTable('Maquinarias')
   }
 }
