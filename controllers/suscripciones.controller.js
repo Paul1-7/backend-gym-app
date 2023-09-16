@@ -73,16 +73,20 @@ const BuscarSuscripcion = async (req, res, next) => {
     next(error)
   }
 }
-const BuscarUltimaSuscripcion = async (req, res, next) => {
+const BuscarUltimasSuscripciones = async (req, res, next) => {
   try {
     const { idSocio } = req.params
-    const lastSubscription = await services.ObtenerUltimaSucripcion(idSocio)
+    const activeSuscriptions = await services.ObtenerUltimasSucripciones(
+      idSocio
+    )
 
-    if (!lastSubscription) return res.json({ id: null, daysRemaining: null })
+    if (!activeSuscriptions.length)
+      return res.json({ id: null, activeSuscriptions: [], daysRemaining: null })
 
     res.json({
-      id: lastSubscription.id,
-      daysRemaining: obtenerDiasRestantes(lastSubscription.fechaFin)
+      id: activeSuscriptions[0].id,
+      activeSuscriptions,
+      daysRemaining: obtenerDiasRestantes(activeSuscriptions[0].fechaFin)
     })
   } catch (error) {
     next(error)
@@ -96,28 +100,24 @@ const AgregarSuscripcion = async (req, res, next) => {
 
     if (!plan) return ERROR_RESPONSE.notFound(msg.notFound, res)
 
+    const activeSuscriptions = await services.ObtenerUltimasSucripciones(
+      suscripcion.idSocio
+    )
+    const daysRemaining = obtenerDiasRestantes(
+      activeSuscriptions?.[0]?.fechaFin ?? new Date()
+    )
+
     suscripcion = {
       ...suscripcion,
       fechaInicio: new Date(),
-      fechaFin: agregarDiasAFecha(plan.duracion * suscripcion.cantidad),
-      montoCancelado: plan.precio * suscripcion.cantidad
+      fechaFin: agregarDiasAFecha(
+        plan.duracion * suscripcion.cantidad + daysRemaining
+      ),
+      montoCancelado: plan.precio * suscripcion.cantidad,
+      diasExtras: daysRemaining
     }
     await services.AgregarSuscripcion(suscripcion)
     res.json({ message: msg.addSuccess })
-  } catch (error) {
-    next(error)
-  }
-}
-
-const ModificarSuscripcion = async (req, res, next) => {
-  try {
-    const { id } = req.params
-    const { body } = req
-    const salon = await services.ModificarSuscripcion(id, body)
-
-    if (!salon) return ERROR_RESPONSE.notFound(msg.notFound, res)
-
-    res.json(salon)
   } catch (error) {
     next(error)
   }
@@ -140,10 +140,9 @@ module.exports = {
   ListarSuscripciones,
   BuscarSuscripcion,
   AgregarSuscripcion,
-  ModificarSuscripcion,
   EliminarSuscripcion,
   ListaReporteSuscripciones,
   ListarReportesPorRenovacion,
   ReporteDeResultados,
-  BuscarUltimaSuscripcion
+  BuscarUltimasSuscripciones
 }

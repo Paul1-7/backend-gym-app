@@ -1,3 +1,4 @@
+const { SALES_REPORT_ORDER_BY } = require('../constants/reports.js')
 const { ERROR_RESPONSE } = require('../middlewares/error.handle.js')
 const { AgregarDetalleVenta } = require('../services/detalleVentas.service.js')
 const {
@@ -34,15 +35,25 @@ const ListarVentas = async (req, res, next) => {
   }
 }
 
-const ListarVentasParaReporte = async (req, res, next) => {
+const obtenerVentasPorFecha = async (req, res, next) => {
   try {
-    const { query } = req
+    const { dateStart, dateEnd, orderBy } = req.query || {}
 
-    const venta = Object.keys(query).length
-      ? await services.ListarVentasPersonalizada(query)
-      : await services.ListarVentas()
+    if (!dateStart || !dateEnd || !orderBy)
+      return ERROR_RESPONSE.notAcceptable(msg.notValid, res)
 
-    res.json(venta)
+    const selectedOption = SALES_REPORT_ORDER_BY.find(
+      ({ id }) => id === orderBy
+    )
+
+    const options = {
+      dateStart,
+      dateEnd,
+      orderBy: selectedOption.criteria
+    }
+
+    const sales = await services.obtenerVentasPorFecha(options)
+    res.json(sales)
   } catch (error) {
     next(error)
   }
@@ -140,5 +151,5 @@ module.exports = {
   AgregarVenta,
   ModificarVenta,
   EliminarVenta,
-  ListarVentasParaReporte
+  obtenerVentasPorFecha
 }

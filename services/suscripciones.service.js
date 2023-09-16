@@ -80,11 +80,11 @@ async function BuscarSuscripcion(id) {
 
 async function AgregarSuscripcion(suscripcion, options = {}) {
   const { idSocio, fechaFin } = suscripcion
-  const ultimaSucripcion = await ObtenerUltimaSucripcion(idSocio)
+  const ultimaSucripcion = await ObtenerUltimasSucripciones(idSocio)
   const hasSuscription = verificarSuscripcionActiva(ultimaSucripcion?.fechaFin)
 
-  const extraDays = ultimaSucripcion
-    ? differenceInDays(ultimaSucripcion.fechaFin, new Date())
+  const extraDays = ultimaSucripcion.length
+    ? differenceInDays(ultimaSucripcion[0].fechaFin, new Date())
     : 0
 
   const newSuscription = hasSuscription
@@ -103,18 +103,21 @@ async function ModificarSuscripcion(id, cambio) {
   return await salon?.update(cambio)
 }
 
-async function ObtenerUltimaSucripcion(idSocio) {
-  const ultimaSuscripcion = await models.Suscripciones.findOne({
-    where: { idSocio },
+async function ObtenerUltimasSucripciones(idSocio) {
+  const suscriptions = await models.Suscripciones.findAll({
+    where: {
+      idSocio,
+      fechaFin: {
+        [Op.gte]: new Date().toISOString()
+      }
+    },
     order: [
       ['fechaFin', 'DESC'],
       ['id', 'DESC']
     ]
   })
 
-  if (!ultimaSuscripcion) return null
-
-  return ultimaSuscripcion.toJSON()
+  return suscriptions.map((suscription) => suscription.toJSON())
 }
 
 module.exports = {
@@ -128,5 +131,5 @@ module.exports = {
   ObtenerSocioMayorSuscripcion,
   ObtenerNumSuscripcionesActivas,
   ObtenerPromRenovacionSusc,
-  ObtenerUltimaSucripcion
+  ObtenerUltimasSucripciones
 }

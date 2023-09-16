@@ -52,6 +52,20 @@ async function BuscarVenta(id) {
   })
 }
 
+async function obtenerVentasPorFecha({ dateStart, dateEnd, orderBy }) {
+  const options = {
+    include: ['socio', 'vendedor'],
+    where: {
+      fecha: {
+        [Op.between]: [dateStart, dateEnd]
+      }
+    },
+    order: [orderBy]
+  }
+
+  return await models.Ventas.findAll(options)
+}
+
 async function AgregarVenta(venta) {
   return await (await models.Ventas.create(venta)).toJSON()
 }
@@ -73,5 +87,6 @@ module.exports = {
   ModificarVenta,
   EliminarVenta,
   ListarVentasPersonalizada,
-  ContarCodigoVenta
+  ContarCodigoVenta,
+  obtenerVentasPorFecha
 }

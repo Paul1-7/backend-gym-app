@@ -6,7 +6,7 @@ const {
   ListaReporteSuscripciones,
   ListarReportesPorRenovacion,
   ReporteDeResultados,
-  BuscarUltimaSuscripcion
+  BuscarUltimasSuscripciones
 } = require('../controllers/suscripciones.controller.js')
 
 const { checkId } = require('../middlewares/validator.handle.js')
@@ -17,7 +17,7 @@ Suscripciones.get('/', ListarSuscripciones)
 Suscripciones.get('/reporte-default', ListaReporteSuscripciones)
 Suscripciones.get('/reporte-renovacion', ListarReportesPorRenovacion)
 Suscripciones.get('/reporte-resultados', ReporteDeResultados)
-Suscripciones.get('/ultima-suscripcion/:idSocio', BuscarUltimaSuscripcion)
+Suscripciones.get('/ultima-suscripcion/:idSocio', BuscarUltimasSuscripciones)
 Suscripciones.get('/:id', checkId, BuscarSuscripcion)
 
 Suscripciones.post('/', AgregarSuscripcion)
