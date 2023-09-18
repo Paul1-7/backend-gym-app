@@ -1,23 +1,5 @@
 {
-  "name": "project-steven",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
-  "scripts": {
-    "dev": "nodemon index.js",
-    "start": "node index.js",
-    "db:restart": "npm run migrations:delete && npm run migrations:run && npm run seeds:run",
-    "migrations:generate": "sequelize-cli migration:generate --name",
-    "migrations:run": "sequelize-cli db:migrate",
-    "migrations:undo": "sequelize-cli db:migrate:undo",
-    "migrations:delete": "sequelize-cli db:migrate:undo:all",
-    "seeds:generate": "sequelize-cli seed:generate --name",
-    "seeds:run": "sequelize-cli db:seed:all",
-    "seeds:delete": "sequelize-cli db:seed:undo:all"
-  },
-  "keywords": [],
   "author": "",
-  "license": "ISC",
   "dependencies": {
     "bcrypt": "^5.1.0",
     "cloudinary": "^1.37.1",
@@ -38,5 +20,22 @@
     "eslint-config-prettier": "^8.8.0",
     "eslint-plugin-prettier": "^4.2.1",
     "prettier": "2.8.8"
-  }
+  },
+  "keywords": [],
+  "license": "ISC",
+  "main": "index.js",
+  "name": "project-steven",
+  "scripts": {
+    "db:restart": "npm run m:delete && npm run m:run && npm run s:run",
+    "dev": "nodemon index.js",
+    "m:delete": "sequelize-cli db:migrate:undo:all",
+    "m:generate": "sequelize-cli migration:generate --name",
+    "m:run": "sequelize-cli db:migrate",
+    "m:undo": "sequelize-cli db:migrate:undo",
+    "s:delete": "sequelize-cli db:seed:undo:all",
+    "s:generate": "sequelize-cli seed:generate --name",
+    "s:run": "sequelize-cli db:seed:all",
+    "start": "node index.js"
+  },
+  "version": "1.0.0"
 }

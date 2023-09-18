@@ -18,8 +18,14 @@ const {
 } = require('./detalleVentas.model.js')
 const { Programacion, ProgramacionSchema } = require('./programacion.model.js')
 const { Equipment, EquipmentSchema } = require('./maquinarias.model.js')
+const { Categories, CategoriesSchema } = require('./categorias.model.js')
+const {
+  DetalleProgramacion,
+  DetalleProgramacionSchema
+} = require('./detalleProgramacion.model.js')
 
 function setUpModels(sequelize) {
+  Categories.init(CategoriesSchema, Categories.config(sequelize))
   Usuarios.init(UsuariosSchema, Usuarios.config(sequelize))
   Planes.init(PlanesSchema, Planes.config(sequelize))
   Rooms.init(RoomsSchema, Rooms.config(sequelize))
@@ -33,8 +39,13 @@ function setUpModels(sequelize) {
   DetalleVentas.init(DetalleVentasSchema, DetalleVentas.config(sequelize))
   Programacion.init(ProgramacionSchema, Programacion.config(sequelize))
   Equipment.init(EquipmentSchema, Equipment.config(sequelize))
+  DetalleProgramacion.init(
+    DetalleProgramacionSchema,
+    DetalleProgramacion.config(sequelize)
+  )
 
   Usuarios.associate(sequelize.models)
+  Categories.associate(sequelize.models)
   Horarios.associate(sequelize.models)
   Productos.associate(sequelize.models)
   Rol.associate(sequelize.models)
@@ -45,6 +56,7 @@ function setUpModels(sequelize) {
   Suscripcion.associate(sequelize.models)
   DetalleVentas.associate(sequelize.models)
   Planes.associate(sequelize.models)
+  DetalleProgramacion.associate(sequelize.models)
 }
 
 module.exports = setUpModels

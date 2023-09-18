@@ -2,6 +2,7 @@ const { Model, DataTypes } = require('sequelize')
 const msg = require('../../utils/validationsMsg.js')
 const { HORARIOS_TABLE } = require('./horarios.model.js')
 const { USUARIOS_TABLE } = require('./usuarios.model.js')
+const { DISCIPLINAS_TABLE } = require('./disciplinas.model.js')
 const PROGRAMACION_TABLE = 'Programacion'
 
 const ProgramacionSchema = {
@@ -14,7 +15,15 @@ const ProgramacionSchema = {
       isUUID: 4
     }
   },
-  idSocio: {
+  cupoDisponible: {
+    type: DataTypes.INTEGER,
+    allowNull: false
+  },
+  capacidad: {
+    type: DataTypes.INTEGER,
+    allowNull: false
+  },
+  idEntrador: {
     type: DataTypes.STRING,
     field: 'id_socio',
     allowNull: false,
@@ -43,6 +52,29 @@ const ProgramacionSchema = {
     },
     onUpdate: 'CASCADE',
     onDelete: 'SET NULL'
+  },
+  idDisciplina: {
+    type: DataTypes.STRING,
+    field: 'id_disciplina',
+    allowNull: false,
+    validate: {
+      is: msg.isAlphanumeric,
+      notNull: msg.notNull
+    },
+    references: {
+      model: DISCIPLINAS_TABLE,
+      key: 'id'
+    },
+    onUpdate: 'CASCADE',
+    onDelete: 'SET NULL'
+  },
+  fecha: {
+    type: DataTypes.DATEONLY,
+    allowNull: false
+  },
+  hora: {
+    type: DataTypes.TIME,
+    allowNull: false
   }
 }
 
