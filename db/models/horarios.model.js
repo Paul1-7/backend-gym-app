@@ -68,6 +68,10 @@ const HorariosSchema = {
     onUpdate: 'CASCADE',
     onDelete: 'SET NULL'
   },
+  dia: {
+    type: DataTypes.INTEGER,
+    allowNull: false
+  },
   estado: {
     type: DataTypes.INTEGER,
     allowNull: false,

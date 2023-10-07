@@ -4,12 +4,13 @@ const msg = require('../utils/validationsMsg.js')
 const { eliminarRolUsuario } = require('./rolesUsuarios.services')
 const { hash } = require('bcrypt')
 
-async function obtenerUsuariosPorRol(active = false, ...rolNames) {
+async function obtenerUsuariosPorRol(active = false, rolNames, query = {}) {
   const options = {
     where: {
-      '$roles.nombre$': { [Op.in]: rolNames }
+      '$roles.nombre$': { [Op.in]: rolNames },
+      ...query
     },
-    include: ['roles']
+    include: ['roles', 'horarios', 'programaciones']
   }
 
   if (active) options.where.estado = 1
@@ -23,18 +24,26 @@ async function buscarUsuario(id) {
   })
 }
 
-async function crearUsuario(User,options = {}) {
-  return await models.Usuarios.create(User,options)
+async function buscarUsuarioPorOpciones(options) {
+  return await models.Usuarios.findOne({
+    where: options,
+    include: ['roles']
+  })
 }
 
-async function actualizarUsuario(id, changes,options={}) {
+async function crearUsuario(User, options = {}) {
+  return await models.Usuarios.create(User, options)
+}
+
+async function actualizarUsuario(id, changes, options = {}) {
   const { password } = changes
 
   const user = await models.Usuarios.findByPk(id)
 
-  const passwordHashed = password !== '' ? await hash(password, 10): user.dataValues.password
-    
-  return await user?.update({ ...changes ,password: passwordHashed  },options)
+  const passwordHashed =
+    password !== '' ? await hash(password, 10) : user.dataValues.password
+
+  return await user?.update({ ...changes, password: passwordHashed }, options)
 }
 
 async function borrarUsuario(id) {
@@ -64,5 +73,6 @@ module.exports = {
   crearUsuario,
   actualizarUsuario,
   obtenerUsuariosPorRol,
-  borrarUsuario
+  borrarUsuario,
+  buscarUsuarioPorOpciones
 }

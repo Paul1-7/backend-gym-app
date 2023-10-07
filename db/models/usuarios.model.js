@@ -83,7 +83,7 @@ const UsuariosSchema = {
   password: {
     type: DataTypes.STRING,
     allowNull: true,
-    defaultValue: null,
+    defaultValue: null
   },
   estado: {
     type: DataTypes.INTEGER,
@@ -113,8 +113,8 @@ class Usuarios extends Model {
     })
 
     this.hasMany(models.Programacion, {
-      as: 'programacion',
-      foreignKey: 'idSocio'
+      as: 'programaciones',
+      foreignKey: 'idEntrenador'
     })
 
     this.hasMany(models.Ventas, {

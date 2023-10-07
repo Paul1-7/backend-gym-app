@@ -4,11 +4,12 @@ async function agregarHorario(data, options = {}) {
   return await models.Horarios.create(data, options)
 }
 
-async function ListarHorarios() {
+async function ListarHorarios(query = '') {
   return await models.Horarios.findAll({
     include: ['salon', 'disciplina', 'entrenador'],
     where: {
-      estado: 1
+      estado: 1,
+      ...query
     }
   })
 }

@@ -21,7 +21,7 @@ const msg = {
 const ListarSocios = async (req, res, next) => {
   try {
     const active = false
-    const socios = await services.obtenerUsuariosPorRol(active, SOCIO)
+    const socios = await services.obtenerUsuariosPorRol(active, [SOCIO])
     res.json(socios)
   } catch (error) {
     next(error)
@@ -41,14 +41,14 @@ const BuscarSocios = async (req, res, next) => {
 }
 
 const AgregarSocios = async (req, res, next) => {
-    const transaction = await sequelize.transaction()
-    try {
-    const { idPlan, cantidad, ...socio } =req.body
+  const transaction = await sequelize.transaction()
+  try {
+    const { idPlan, cantidad, ...socio } = req.body
     const rolSocio = await buscarRolPorNombre(SOCIO)
 
     const { id: idRol } = rolSocio
 
-    const newsocios = await services.crearUsuario(socio,{transaction})
+    const newsocios = await services.crearUsuario(socio, { transaction })
 
     const plan = await BuscarPlan(idPlan)
     if (plan) {
@@ -60,10 +60,12 @@ const AgregarSocios = async (req, res, next) => {
         fechaFin: agregarDiasAFecha(plan.duracion),
         montoCancelado: plan.precio * cantidad
       }
-      await AgregarSuscripcion(newSuscripcion,{transaction})
+      await AgregarSuscripcion(newSuscripcion, { transaction })
     }
 
-    await agregarRolUsuario(newsocios.dataValues.id, [{ idRol }],{transaction})
+    await agregarRolUsuario(newsocios.dataValues.id, [{ idRol }], {
+      transaction
+    })
     await transaction.commit()
     res.json({ message: msg.addSuccess })
   } catch (error) {

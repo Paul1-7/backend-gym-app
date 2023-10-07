@@ -37,14 +37,13 @@ const msg = {
 const listarEmpleados = async (req, res, next) => {
   try {
     const active = false
-    const empleados = await userServices.obtenerUsuariosPorRol(
-      active,
+    const empleados = await userServices.obtenerUsuariosPorRol(active, [
       RECEPCIONISTA,
       ENTRENADOR,
       ADMINiSTRADOR,
       LIMPIEZA,
       SOCIO
-    )
+    ])
     res.json(empleados)
   } catch (error) {
     next(error)
@@ -52,10 +51,13 @@ const listarEmpleados = async (req, res, next) => {
 }
 const listarEntrenadores = async (req, res, next) => {
   try {
+    const { query } = req
     const active = false
+    const hasQuery = !!Object.keys(query).length
     const empleados = await userServices.obtenerUsuariosPorRol(
       active,
-      ENTRENADOR
+      [ENTRENADOR],
+      hasQuery ? query : null
     )
     res.json(empleados)
   } catch (error) {
@@ -85,8 +87,6 @@ const crearEmpleado = async (req, res, next) => {
     const allRoles = await obtenerRoles()
 
     let newRoles = agregarRolSocio(allRoles, roles)
-    newRoles = agregarRolRecepcionista(allRoles, newRoles)
-
     const passwordHashed = await hash(dataUser.password.toString(), 10)
     const empleado = await userServices.crearUsuario(
       { ...dataUser, password: passwordHashed },
@@ -120,7 +120,6 @@ const modificarEmpleado = async (req, res, next) => {
     const allRoles = await obtenerRoles()
 
     let newRoles = agregarRolSocio(allRoles, roles)
-    newRoles = agregarRolRecepcionista(allRoles, newRoles)
 
     const rolObject = newRoles.map((idRol) => ({ idRol }))
     await actualizarRolUsuario(empleado.dataValues.id, rolObject, {

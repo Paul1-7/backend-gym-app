@@ -56,6 +56,7 @@ function setUpModels(sequelize) {
   Suscripcion.associate(sequelize.models)
   DetalleVentas.associate(sequelize.models)
   Planes.associate(sequelize.models)
+  Programacion.associate(sequelize.models)
   DetalleProgramacion.associate(sequelize.models)
 }
 

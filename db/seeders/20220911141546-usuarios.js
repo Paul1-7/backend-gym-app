@@ -8,14 +8,15 @@ module.exports = {
         {
           id: 'd9e42cd8-9399-4e0f-9eed-cb68f2f23549',
           ci: '7813849232',
-          nombre: 'Mario',
-          apellido_p: 'Caceres',
-          apellido_m: 'Romero',
+          nombre: 'Steven',
+          apellido_p: 'Rosales',
+          apellido_m: 'Almazan',
           edad: 15,
           celular: '71893932',
           direccion: 'direccion 1',
-          usuario: null,
-          password: null,
+          usuario: 'admin',
+          password:
+            '$2a$10$qS5VYLdgwgYPpP6MmvNibOdTgeVxOz0mFapx/da.b4ya.9iZCm01K',
           estado: 1
         },
         {

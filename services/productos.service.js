@@ -10,8 +10,8 @@ async function BuscarProducto(id) {
   return await models.Productos.findByPk(id)
 }
 
-async function AgregarProducto(producto) {
-  return await models.Productos.create(producto)
+async function AgregarProducto(producto, options = {}) {
+  return await models.Productos.create(producto, options)
 }
 
 async function ModificarProducto(id, cambio) {
@@ -20,13 +20,11 @@ async function ModificarProducto(id, cambio) {
 }
 
 async function EliminarProducto(id) {
-    const productos = await models.Productos.findByPk(id,{
-      include:['detalleVentas']
-    })
+  const productos = await models.Productos.findByPk(id, {
+    include: ['detalleVentas']
+  })
 
-  if (
-    productos.detalleVentas.length > 0 
-  )
+  if (productos.detalleVentas.length > 0)
     return new Error(msg.msgErrorForeignKey)
 
   return await productos?.destroy()

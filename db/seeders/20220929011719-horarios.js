@@ -12,6 +12,7 @@ module.exports = {
           horario_entrada: '2023-06-15T10:00:00-04:00',
           id_entrenador: 'd9e42cd8-9399-4e0f-9eed-cb68f2f23549',
           estado: 1,
+          dia: 4,
           horario_salida: '2023-06-15T10:30:00-04:00'
         },
         {
@@ -21,6 +22,7 @@ module.exports = {
           horario_entrada: '2023-06-13T10:30:00-04:00',
           id_entrenador: '6efc6605-0364-4980-8428-4d332fd41cae',
           estado: 1,
+          dia: 2,
           horario_salida: '2023-06-13T10:30:00-04:00'
         },
         {
@@ -30,6 +32,7 @@ module.exports = {
           horario_entrada: '2023-06-11T10:30:00-04:00',
           id_entrenador: '6efc6605-0364-4980-8428-4d332fd41cae',
           estado: 1,
+          dia: 0,
           horario_salida: '2023-06-11T10:30:00-04:00'
         }
       ],

@@ -15,6 +15,12 @@ const ProgramacionSchema = {
       isUUID: 4
     }
   },
+  codProgramacion: {
+    allowNull: false,
+    comment: 'codigo de la programacion',
+    type: DataTypes.STRING,
+    field: 'cod_programacion'
+  },
   cupoDisponible: {
     type: DataTypes.INTEGER,
     allowNull: false
@@ -23,9 +29,9 @@ const ProgramacionSchema = {
     type: DataTypes.INTEGER,
     allowNull: false
   },
-  idEntrador: {
+  idEntrenador: {
     type: DataTypes.STRING,
-    field: 'id_socio',
+    field: 'id_entrenador',
     allowNull: false,
     validate: {
       is: msg.isAlphanumeric,
@@ -72,6 +78,10 @@ const ProgramacionSchema = {
     type: DataTypes.DATEONLY,
     allowNull: false
   },
+  dia: {
+    type: DataTypes.INTEGER,
+    allowNull: false
+  },
   hora: {
     type: DataTypes.TIME,
     allowNull: false
@@ -80,14 +90,24 @@ const ProgramacionSchema = {
 
 class Programacion extends Model {
   static associate(models) {
-    this.belongsToMany(models.Usuarios, {
-      as: 'socio',
-      foreignKey: 'idUsuario'
+    this.belongsTo(models.Usuarios, {
+      as: 'entrenador',
+      foreignKey: 'idEntrenador'
     })
 
-    this.belongsToMany(models.Horarios, {
+    this.belongsTo(models.Horarios, {
       as: 'horario',
       foreignKey: 'idHorario'
+    })
+
+    this.belongsTo(models.Disciplinas, {
+      as: 'disciplina',
+      foreignKey: 'idDisciplina'
+    })
+
+    this.hasMany(models.Detalle_Programacion, {
+      foreignKey: 'idProgramacion',
+      as: 'detalle'
     })
   }
 

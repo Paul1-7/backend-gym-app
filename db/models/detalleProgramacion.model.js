@@ -50,12 +50,13 @@ const DetalleProgramacionSchema = {
 
 class DetalleProgramacion extends Model {
   static associate(models) {
-    this.belongsTo(models.Ventas, {
-      foreignKey: 'idVenta'
+    this.belongsTo(models.Usuarios, {
+      foreignKey: 'idSocio',
+      as: 'socio'
     })
-    this.belongsTo(models.Productos, {
-      as: 'productos',
-      foreignKey: 'idProd'
+    this.belongsTo(models.Programacion, {
+      as: 'programacion',
+      foreignKey: 'idProgramacion'
     })
   }
 
