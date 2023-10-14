@@ -1,3 +1,4 @@
+const { Op } = require('sequelize')
 const { models } = require('../libs/sequelize.js')
 
 async function agregarHorario(data, options = {}) {
@@ -12,6 +13,33 @@ async function ListarHorarios(query = '') {
       ...query
     }
   })
+}
+
+async function verificarDisponibilidad(horarioEntrada, horarioSalida) {
+  const registrosIntersectados = await models.Horarios.findAll({
+    where: {
+      [Op.or]: [
+        {
+          horarioEntrada: {
+            [Op.between]: [horarioEntrada, horarioSalida]
+          }
+        },
+        {
+          horarioSalida: {
+            [Op.between]: [horarioEntrada, horarioSalida]
+          }
+        },
+        {
+          [Op.and]: [
+            { horarioEntrada: { [Op.lte]: horarioEntrada } },
+            { horarioSalida: { [Op.gte]: horarioSalida } }
+          ]
+        }
+      ]
+    }
+  })
+
+  return registrosIntersectados.map((item) => item.toJSON())
 }
 
 async function eliminarHorarios(id) {
@@ -37,5 +65,6 @@ module.exports = {
   buscarHorario,
   eliminarHorarios,
   modificarHorarios,
-  ListarHorarios
+  ListarHorarios,
+  verificarDisponibilidad
 }

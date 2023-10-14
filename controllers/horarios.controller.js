@@ -7,7 +7,17 @@ const msg = {
   notFoundEmpleado: 'empleado no encontrado',
   addSuccess: 'horario agregado correctamente',
   modifySuccess: 'horario modificado correctamente',
-  deleteSuccess: 'horario eliminado correctamente'
+  deleteSuccess: 'horario eliminado correctamente',
+  notValid:
+    'el entrenador o salón coincide con otro horario establecido con anterioridad '
+}
+
+const getMatchSchedule = (availableSchedule, incomingData) => {
+  const { idSalon, idEntrenador } = incomingData
+  return availableSchedule.some((availability) => {
+    const values = Object.values(availability)
+    return values.includes(idSalon) || values.includes(idEntrenador)
+  })
 }
 
 const listarHorarios = async (req, res, next) => {
@@ -36,7 +46,19 @@ const buscarHorarios = async (req, res, next) => {
 const agregarHorario = async (req, res, next) => {
   try {
     const { body } = req
-    const day = getDay(new Date(body.horarioEntrada))
+    const { horarioEntrada, horarioSalida } = body
+    const day = getDay(new Date(horarioEntrada))
+
+    const availability = await services.verificarDisponibilidad(
+      horarioEntrada,
+      horarioSalida
+    )
+
+    const matchSchedule = getMatchSchedule(availability, body)
+
+    if (matchSchedule) {
+      return ERROR_RESPONSE.notAcceptable(msg.notValid, res)
+    }
 
     await services.agregarHorario({ ...body, dia: day })
     res.json({ message: msg.addSuccess })

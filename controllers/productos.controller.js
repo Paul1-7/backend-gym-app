@@ -32,7 +32,11 @@ const BuscarProducto = async (req, res, next) => {
 const AgregarProducto = async (req, res, next) => {
   try {
     const { body } = req
-    await services.AgregarProducto(body)
+    const { tieneVencimiento, fechaVencimiento } = body
+    await services.AgregarProducto({
+      ...body,
+      fechaVencimiento: JSON.parse(tieneVencimiento) ? fechaVencimiento : null
+    })
     res.json({ message: msg.addSuccess })
   } catch (error) {
     next(error)
@@ -43,11 +47,15 @@ const ModificarProducto = async (req, res, next) => {
   try {
     const { id } = req.params
     const { body } = req
-    const producto = await services.ModificarProducto(id, body)
+    const { tieneVencimiento, fechaVencimiento } = body
+    const producto = await services.ModificarProducto(id, {
+      ...body,
+      fechaVencimiento: tieneVencimiento ? fechaVencimiento : null
+    })
 
     if (!producto) return ERROR_RESPONSE.notFound(msg.notFound, res)
 
-    res.json({message:msg.modifySuccess})
+    res.json({ message: msg.modifySuccess })
   } catch (error) {
     next(error)
   }
@@ -55,7 +63,7 @@ const ModificarProducto = async (req, res, next) => {
 
 const EliminarProducto = async (req, res, next) => {
   try {
-   const { id } = req.params
+    const { id } = req.params
     const existeProducto = await services.BuscarProducto(id)
     if (!existeProducto) return ERROR_RESPONSE.notFound(msg.notFound, res)
 
@@ -64,7 +72,7 @@ const EliminarProducto = async (req, res, next) => {
     if (productoBorrado instanceof Error)
       return ERROR_RESPONSE.notAcceptable(productoBorrado.message, res)
 
-    res.json({ message: msg.deleteSuccess,id })
+    res.json({ message: msg.deleteSuccess, id })
   } catch (error) {
     next(error)
   }
