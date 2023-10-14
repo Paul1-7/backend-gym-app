@@ -90,20 +90,6 @@ const ProductosSchema = {
     type: DataTypes.BOOLEAN,
     comment: 'informacion si tine vencimiento producto',
     allowNull: false
-  },
-  idCategoria: {
-    allowNull: false,
-    type: DataTypes.STRING,
-    field: 'id_cat',
-    references: {
-      model: CATEGORY_TABLE,
-      key: 'id'
-    },
-    validate: {
-      isUUID: 4
-    },
-    onUpdate: 'CASCADE',
-    onDelete: 'SET NULL'
   }
 }
 
@@ -114,10 +100,9 @@ class Productos extends Model {
       foreignKey: 'id'
     })
 
-    this.belongsTo(models.Categorias, {
-      foreignKey: 'idCategoria',
-      as: 'categoria',
-      targetKey: 'id'
+    this.hasMany(models.Categorias_Productos, {
+      as: 'categorias',
+      foreignKey: 'idProducto'
     })
   }
 

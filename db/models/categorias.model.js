@@ -41,13 +41,17 @@ const CategoriesSchema = {
 
 class Categories extends Model {
   static associate(models) {
-    this.hasMany(models.Disciplinas, {
+    this.hasMany(models.Categorias_Disciplinas, {
       as: 'disciplinas',
       foreignKey: 'idCategoria'
     })
 
-    this.hasMany(models.Productos, {
+    this.hasMany(models.Categorias_Productos, {
       as: 'productos',
+      foreignKey: 'idCategoria'
+    })
+    this.hasMany(models.Categorias_Maquinarias, {
+      as: 'maquinarias',
       foreignKey: 'idCategoria'
     })
   }

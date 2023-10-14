@@ -16,21 +16,37 @@ async function BuscarCategoria(id) {
     where: {
       estado: 1,
       id
-    }
+    },
+    include: [
+      {
+        model: models.Categorias_Disciplinas,
+        include: ['disciplina'],
+        as: 'disciplinas'
+      },
+      {
+        model: models.Categorias_Productos,
+        include: ['producto'],
+        as: 'productos'
+      },
+      {
+        model: models.Categorias_Maquinarias,
+        include: ['maquinaria'],
+        as: 'maquinarias'
+      }
+    ]
   })
 }
 
-async function AgregarCategoria(salon) {
-  return await models.Categorias.create(salon)
+async function AgregarCategoria(data, options = {}) {
+  return await models.Categorias.create(data, options)
 }
 
-async function ModificarCategoria(id, cambio) {
-  const salon = await models.Categorias.findByPk(id)
-  return await salon?.update(cambio)
+async function ModificarCategoria(id, cambio, options = {}) {
+  return await models.Categorias.update(cambio, { where: { id }, ...options })
 }
 
 async function EliminarCategoria(id) {
-  const salon = await models.Categorias.update(
+  const data = await models.Categorias.update(
     { estado: 0 },
     {
       where: {
@@ -39,7 +55,7 @@ async function EliminarCategoria(id) {
     }
   )
 
-  return salon > 0
+  return data > 0
 }
 
 module.exports = {

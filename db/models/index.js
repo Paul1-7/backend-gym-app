@@ -23,6 +23,18 @@ const {
   DetalleProgramacion,
   DetalleProgramacionSchema
 } = require('./detalleProgramacion.model.js')
+const {
+  CategoriasProductos,
+  CategoriasProductosSchema
+} = require('./categoriasProductos.model.js')
+const {
+  CategoriasDisciplinas,
+  CategoriasDisciplinasSchema
+} = require('./categoriasDisciplinas.model.js')
+const {
+  CategoriasMaquinarias,
+  CategoriasMaquinariasSchema
+} = require('./categoriasMaquinarias.model.js')
 
 function setUpModels(sequelize) {
   Categories.init(CategoriesSchema, Categories.config(sequelize))
@@ -43,6 +55,18 @@ function setUpModels(sequelize) {
     DetalleProgramacionSchema,
     DetalleProgramacion.config(sequelize)
   )
+  CategoriasProductos.init(
+    CategoriasProductosSchema,
+    CategoriasProductos.config(sequelize)
+  )
+  CategoriasDisciplinas.init(
+    CategoriasDisciplinasSchema,
+    CategoriasDisciplinas.config(sequelize)
+  )
+  CategoriasMaquinarias.init(
+    CategoriasMaquinariasSchema,
+    CategoriasMaquinarias.config(sequelize)
+  )
 
   Usuarios.associate(sequelize.models)
   Categories.associate(sequelize.models)
@@ -58,6 +82,9 @@ function setUpModels(sequelize) {
   Planes.associate(sequelize.models)
   Programacion.associate(sequelize.models)
   DetalleProgramacion.associate(sequelize.models)
+  CategoriasProductos.associate(sequelize.models)
+  CategoriasDisciplinas.associate(sequelize.models)
+  CategoriasMaquinarias.associate(sequelize.models)
 }
 
 module.exports = setUpModels

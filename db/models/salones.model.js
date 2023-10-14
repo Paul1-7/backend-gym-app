@@ -13,6 +13,15 @@ const RoomsSchema = {
       isUUID: 4
     }
   },
+  codSalon: {
+    field: 'cod_salon',
+    type: DataTypes.STRING,
+    allowNull: false
+  },
+  planta: {
+    type: DataTypes.INTEGER,
+    allowNull: false
+  },
   nombre: {
     type: DataTypes.STRING,
     allowNull: false,

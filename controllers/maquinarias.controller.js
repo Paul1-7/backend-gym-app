@@ -1,5 +1,6 @@
 const { ERROR_RESPONSE } = require('../middlewares/error.handle.js')
 const services = require('../services/maquinarias.service.js')
+const { generateCodeToDocuments } = require('../utils/dataHandler.js')
 
 const msg = {
   notFound: 'Maquinaria no encontrada',
@@ -32,7 +33,13 @@ const buscarMaquinaria = async (req, res, next) => {
 const agregarMaquinaria = async (req, res, next) => {
   try {
     const { body } = req
-    await services.agregarMaquinaria(body)
+    const machineCode = await services.contarCodigoMaquinaria()
+
+    await services.agregarMaquinaria({
+      ...body,
+      codMaquinaria: generateCodeToDocuments('M', machineCode)
+    })
+
     res.json({ message: msg.addSuccess })
   } catch (error) {
     next(error)

@@ -39,20 +39,6 @@ const DisciplinasSchema = {
     validate: {
       is: msg.isState
     }
-  },
-  idCategoria: {
-    allowNull: false,
-    type: DataTypes.STRING,
-    field: 'id_cat',
-    references: {
-      model: CATEGORY_TABLE,
-      key: 'id'
-    },
-    validate: {
-      isUUID: 4
-    },
-    onUpdate: 'CASCADE',
-    onDelete: 'SET NULL'
   }
 }
 
@@ -64,10 +50,9 @@ class Disciplinas extends Model {
       foreignKey: 'idDisciplina'
     })
 
-    this.belongsTo(models.Categorias, {
-      foreignKey: 'idCategoria',
-      as: 'categoria',
-      targetKey: 'id'
+    this.hasMany(models.Categorias_Disciplinas, {
+      as: 'categorias',
+      foreignKey: 'idDisciplina'
     })
   }
 

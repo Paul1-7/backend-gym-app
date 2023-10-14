@@ -1,9 +1,23 @@
+const { format } = require('date-fns')
 const { models } = require('../libs/sequelize.js')
+const { Op } = require('sequelize')
 
 async function listarMaquinarias() {
   return await models.Maquinarias.findAll({
     where: {
       borrado: false
+    }
+  })
+}
+
+async function contarCodigoMaquinaria() {
+  const today = format(new Date(), 'yyyyMMdd')
+  const pattern = `M-${today}%`
+  return await models.Maquinarias.count({
+    where: {
+      codMaquinaria: {
+        [Op.like]: pattern
+      }
     }
   })
 }
@@ -21,8 +35,7 @@ async function agregarMaquinaria(salon) {
 }
 
 async function modificarMaquinaria(id, cambio) {
-  const data = await models.Maquinarias.findByPk(id)
-  return await data?.update(cambio)
+  return await models.Maquinarias.update(cambio, { where: { id } })
 }
 
 async function eliminarMaquinaria(id) {
@@ -35,5 +48,6 @@ module.exports = {
   buscarMaquinaria,
   agregarMaquinaria,
   modificarMaquinaria,
-  eliminarMaquinaria
+  eliminarMaquinaria,
+  contarCodigoMaquinaria
 }

@@ -54,6 +54,11 @@ const EquipmentSchema = {
     type: DataTypes.FLOAT,
     allowNull: false
   },
+  codMaquinaria: {
+    field: 'cod_maquinaria',
+    type: DataTypes.TEXT,
+    allowNull: false
+  },
   estado: {
     type: DataTypes.TEXT,
     allowNull: false
@@ -65,7 +70,12 @@ const EquipmentSchema = {
 }
 
 class Equipment extends Model {
-  static associate(models) {}
+  static associate(models) {
+    this.hasMany(models.Categorias_Maquinarias, {
+      as: 'categorias',
+      foreignKey: 'idMaquinaria'
+    })
+  }
 
   static config(sequelize) {
     return {

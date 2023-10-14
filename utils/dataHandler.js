@@ -72,6 +72,11 @@ function generateCodeToDocuments(letter, secuencialNumber) {
   return `${letter}-${today}-${numberPad}`
 }
 
+function generateCodeWithoutDateToDocs(letter, secuencialNumber) {
+  const numberPad = (secuencialNumber + 1).toString().padStart(4, '0')
+  return `${letter}-${numberPad}`
+}
+
 module.exports = {
   agregarRolSocio,
   agregarRolRecepcionista,
@@ -80,5 +85,6 @@ module.exports = {
   obtenerNuevoStock,
   verificarSuscripcionActiva,
   obtenerDiasRestantes,
-  generateCodeToDocuments
+  generateCodeToDocuments,
+  generateCodeWithoutDateToDocs
 }

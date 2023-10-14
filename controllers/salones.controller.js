@@ -1,12 +1,12 @@
 const { ERROR_RESPONSE } = require('../middlewares/error.handle.js')
 const services = require('../services/salones.service.js')
+const { generateCodeWithoutDateToDocs } = require('../utils/dataHandler.js')
 
 const msg = {
   notFound: 'Salón no encontrado',
   deleteSuccess: 'Salón eliminado',
   addSuccess: 'Salón agregado correctamente',
-    modifySuccess: 'Salón modificado correctamente'
-
+  modifySuccess: 'Salón modificado correctamente'
 }
 
 const ListarSalon = async (req, res, next) => {
@@ -33,7 +33,12 @@ const BuscarSalon = async (req, res, next) => {
 const AgregarSalon = async (req, res, next) => {
   try {
     const { body } = req
-    await services.AgregarSalon(body)
+
+    const roomCode = await services.ContarCodigoSalon(body.planta)
+    await services.AgregarSalon({
+      ...body,
+      codSalon: generateCodeWithoutDateToDocs(`S${body.planta}`, roomCode)
+    })
     res.json({ message: msg.addSuccess })
   } catch (error) {
     next(error)
@@ -44,11 +49,16 @@ const ModificarSalon = async (req, res, next) => {
   try {
     const { id } = req.params
     const { body } = req
-    const salon = await services.ModificarSalon(id, body)
+
+    const roomCode = await services.ContarCodigoSalon(body.planta)
+    const salon = await services.ModificarSalon(id, {
+      ...body,
+      codSalon: generateCodeWithoutDateToDocs(`S${body.planta}`, roomCode)
+    })
 
     if (!salon) return ERROR_RESPONSE.notFound(msg.notFound, res)
 
-    res.json({message: msg.modifySuccess})
+    res.json({ message: msg.modifySuccess })
   } catch (error) {
     next(error)
   }
@@ -56,7 +66,7 @@ const ModificarSalon = async (req, res, next) => {
 
 const EliminarSalon = async (req, res, next) => {
   try {
-     const { id } = req.params
+    const { id } = req.params
     const existeSalon = await services.BuscarSalon(id)
     if (!existeSalon) return ERROR_RESPONSE.notFound(msg.notFound, res)
 
@@ -65,7 +75,7 @@ const EliminarSalon = async (req, res, next) => {
     if (salonBorrado instanceof Error)
       return ERROR_RESPONSE.notAcceptable(salonBorrado.message, res)
 
-    res.json({ message: msg.deleteSuccess,id })
+    res.json({ message: msg.deleteSuccess, id })
   } catch (error) {
     next(error)
   }
