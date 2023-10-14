@@ -1,8 +1,29 @@
+const { Op } = require('sequelize')
 const { models } = require('../libs/sequelize.js')
 const msg = require('../utils/validationsMsg.js')
 
-async function ListarPlanes() {
-  return await models.Planes.findAll()
+async function ListarPlanes(query = {}) {
+  let options = {}
+  if (Object.values(query).length > 0) {
+    options = {
+      where: {
+        [Op.or]: [
+          {
+            fechaVencimiento: {
+              [Op.gte]: query?.fechaVencimiento
+            }
+          },
+          {
+            fechaVencimiento: {
+              [Op.is]: null
+            }
+          }
+        ]
+      }
+    }
+  }
+
+  return await models.Planes.findAll(options)
 }
 
 async function BuscarPlan(id) {
@@ -19,14 +40,11 @@ async function ModificarPlan(id, cambio) {
 }
 
 async function EliminarPlan(id) {
- const plan = await models.Planes.findByPk(id,{
-   include:['suscripciones']
+  const plan = await models.Planes.findByPk(id, {
+    include: ['suscripciones']
   })
 
-  if (
-    plan.suscripciones.length > 0 
-  )
-    return new Error(msg.msgErrorForeignKey)
+  if (plan.suscripciones.length > 0) return new Error(msg.msgErrorForeignKey)
 
   return await plan?.destroy()
 }

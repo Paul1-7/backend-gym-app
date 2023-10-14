@@ -10,7 +10,8 @@ const msg = {
 
 const ListarPlanes = async (req, res, next) => {
   try {
-    const planes = await services.ListarPlanes()
+    const { query } = req
+    const planes = await services.ListarPlanes(query)
     res.json(planes)
   } catch (error) {
     next(error)
@@ -32,7 +33,11 @@ const BuscarPlan = async (req, res, next) => {
 const AgregarPlan = async (req, res, next) => {
   try {
     const { body } = req
-    await services.AgregarPlan(body)
+    const { esRecurrente, fechaVencimiento } = body
+    await services.AgregarPlan({
+      ...body,
+      fechaVencimiento: Number(esRecurrente) === 1 ? null : fechaVencimiento
+    })
     res.json({ message: msg.addSuccess })
   } catch (error) {
     next(error)
@@ -43,11 +48,16 @@ const ModificarPlan = async (req, res, next) => {
   try {
     const { id } = req.params
     const { body } = req
-    const plan = await services.ModificarPlan(id, body)
+    const { esRecurrente, fechaVencimiento } = body
+
+    const plan = await services.ModificarPlan(id, {
+      ...body,
+      fechaVencimiento: Number(esRecurrente) === 1 ? null : fechaVencimiento
+    })
 
     if (!plan) return ERROR_RESPONSE.notFound(msg.notFound, res)
 
-    res.json({message:msg.modifySuccess})
+    res.json({ message: msg.modifySuccess })
   } catch (error) {
     next(error)
   }
@@ -64,8 +74,7 @@ const EliminarPlan = async (req, res, next) => {
     if (planBorrado instanceof Error)
       return ERROR_RESPONSE.notAcceptable(planBorrado.message, res)
 
-
-    res.json({ message: msg.deleteSuccess,id })
+    res.json({ message: msg.deleteSuccess, id })
   } catch (error) {
     next(error)
   }

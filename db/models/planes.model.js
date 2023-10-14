@@ -29,6 +29,11 @@ const PlanesSchema = {
       notNull: msg.notNull
     }
   },
+  fechaVencimiento: {
+    field: 'fecha_vencimiento',
+    type: DataTypes.DATEONLY,
+    allowNull: true
+  },
   duracion: {
     type: DataTypes.INTEGER,
     allowNull: false,
@@ -37,9 +42,9 @@ const PlanesSchema = {
       notNull: msg.notNull
     }
   },
-  esExpandible: {
+  esRecurrente: {
     type: DataTypes.INTEGER,
-    field: 'es_expandible',
+    field: 'es_recurrente',
     allowNull: false,
     validate: {
       notNull: msg.notNull,

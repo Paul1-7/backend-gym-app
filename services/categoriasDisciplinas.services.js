@@ -17,7 +17,6 @@ async function actualizarCategoriasDisciplinas(
   options = {}
 ) {
   await eliminarCategoriasDisciplinas(idCategoria, options)
-  console.log('entra')
   await agregarCategoriasDisciplinas(data, options)
 }
 
