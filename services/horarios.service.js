@@ -1,5 +1,6 @@
 const { Op } = require('sequelize')
 const { models } = require('../libs/sequelize.js')
+const { add } = require('date-fns')
 
 async function agregarHorario(data, options = {}) {
   return await models.Horarios.create(data, options)
@@ -21,19 +22,11 @@ async function verificarDisponibilidad(horarioEntrada, horarioSalida) {
       [Op.or]: [
         {
           horarioEntrada: {
-            [Op.between]: [horarioEntrada, horarioSalida]
-          }
-        },
-        {
+            [Op.lt]: horarioSalida
+          },
           horarioSalida: {
-            [Op.between]: [horarioEntrada, horarioSalida]
+            [Op.gt]: horarioEntrada
           }
-        },
-        {
-          [Op.and]: [
-            { horarioEntrada: { [Op.lte]: horarioEntrada } },
-            { horarioSalida: { [Op.gte]: horarioSalida } }
-          ]
         }
       ]
     }
