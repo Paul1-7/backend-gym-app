@@ -16,11 +16,7 @@ const UsuariosSchema = {
   ci: {
     type: DataTypes.STRING,
     allowNull: false,
-    unique: true,
-    validate: {
-      is: msg.isAlphanumeric,
-      notNull: msg.notNull
-    }
+    unique: true
   },
   nombre: {
     type: DataTypes.STRING,
@@ -42,11 +38,7 @@ const UsuariosSchema = {
   apellidoM: {
     type: DataTypes.STRING,
     field: 'apellido_m',
-    allowNull: false,
-    validate: {
-      is: msg.isAlphanumeric,
-      notNull: msg.notNull
-    }
+    allowNull: true
   },
   edad: {
     type: DataTypes.INTEGER,

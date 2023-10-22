@@ -109,10 +109,6 @@ const AgregarSuscripcion = async (req, res, next) => {
 
     suscripcion = {
       ...suscripcion,
-      fechaInicio: new Date(),
-      fechaFin: agregarDiasAFecha(
-        plan.duracion * suscripcion.cantidad + daysRemaining
-      ),
       montoCancelado: plan.precio * suscripcion.cantidad,
       diasExtras: daysRemaining
     }

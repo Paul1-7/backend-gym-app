@@ -41,7 +41,9 @@ async function actualizarUsuario(id, changes, options = {}) {
   const user = await models.Usuarios.findByPk(id)
 
   const passwordHashed =
-    password !== '' ? await hash(password, 10) : user.dataValues.password
+    password !== '' && password
+      ? await hash(password, 10)
+      : user.dataValues.password
 
   return await user?.update({ ...changes, password: passwordHashed }, options)
 }
