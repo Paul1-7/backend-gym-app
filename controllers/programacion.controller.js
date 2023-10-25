@@ -2,7 +2,7 @@ const sequelize = require('../libs/sequelize.js')
 const { ERROR_RESPONSE } = require('../middlewares/error.handle.js')
 const {
   agregarSocioProgramacion,
-  eliminarSocioProgramacion
+  modificarSocioProgramacion
 } = require('../services/detalleProgramacion.service.js')
 const services = require('../services/programacion.service.js')
 const { generateCodeToDocuments } = require('../utils/dataHandler.js')
@@ -49,7 +49,7 @@ const agregarProgramacion = async (req, res, next) => {
     const newSchedule = await services.agregarProgramacion(
       {
         ...programacion,
-        codProgramacion: generateCodeToDocuments('V', scheduleCode)
+        codProgramacion: generateCodeToDocuments('PR', scheduleCode)
       },
       { transaction }
     )
@@ -64,7 +64,9 @@ const agregarProgramacion = async (req, res, next) => {
     await agregarSocioProgramacion(scheduleDetail, { transaction })
 
     res.json({ message: msg.addSuccess })
+    await transaction.commit()
   } catch (error) {
+    await transaction.rollback()
     next(error)
   }
 }
@@ -72,23 +74,24 @@ const agregarProgramacion = async (req, res, next) => {
 const modificarProgramacion = async (req, res, next) => {
   const transaction = await sequelize.transaction()
   try {
+    const { id } = req.params
     const { detalle, programacion } = req.body
 
-    const newSchedule = await services.agregarProgramacion(programacion, {
+    await services.modificarProgramacion(id, programacion, {
       transaction
     })
 
     const scheduleDetail = detalle.map((detail) => {
       return {
         ...detail,
-        idProgramacion: newSchedule.id
+        idProgramacion: id
       }
     })
-    await eliminarSocioProgramacion(programacion.id, { transaction })
-    await agregarSocioProgramacion(scheduleDetail, { transaction })
-
+    await modificarSocioProgramacion(id, scheduleDetail, { transaction })
+    await transaction.commit()
     res.json({ message: msg.modifySuccess })
   } catch (error) {
+    await transaction.rollback()
     next(error)
   }
 }

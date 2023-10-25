@@ -10,10 +10,7 @@ const ProgramacionSchema = {
     allowNull: false,
     primaryKey: true,
     type: DataTypes.STRING,
-    defaultValue: DataTypes.UUIDV4,
-    validate: {
-      isUUID: 4
-    }
+    defaultValue: DataTypes.UUIDV4
   },
   codProgramacion: {
     allowNull: false,

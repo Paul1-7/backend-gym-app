@@ -13,7 +13,13 @@ async function eliminarSocioProgramacion(idProgramacion, options = {}) {
   })
 }
 
+async function modificarSocioProgramacion(idProgramacion, data, options = {}) {
+  await eliminarSocioProgramacion(idProgramacion, options)
+  await agregarSocioProgramacion(data, options)
+}
+
 module.exports = {
   agregarSocioProgramacion,
-  eliminarSocioProgramacion
+  eliminarSocioProgramacion,
+  modificarSocioProgramacion
 }

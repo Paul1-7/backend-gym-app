@@ -24,6 +24,9 @@ const {
 const {
   CategoriasDisciplinasSchema
 } = require('../models/categoriasDisciplinas.model')
+const {
+  DetalleProgramacionSchema
+} = require('../models/detalleProgramacion.model')
 
 module.exports = {
   async up(queryInterface) {
@@ -41,7 +44,10 @@ module.exports = {
     await queryInterface.createTable('Detalle_Ventas', DetalleVentasSchema)
     await queryInterface.createTable('Programacion', ProgramacionSchema)
     await queryInterface.createTable('Maquinarias', EquipmentSchema)
-    await queryInterface.createTable('Detalle_Programacion', EquipmentSchema)
+    await queryInterface.createTable(
+      'Detalle_Programacion',
+      DetalleProgramacionSchema
+    )
     await queryInterface.createTable(
       'Categorias_Productos',
       CategoriasProductosSchema

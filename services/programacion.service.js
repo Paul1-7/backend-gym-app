@@ -49,7 +49,8 @@ async function buscarProgramacion(id) {
       {
         association: 'detalle',
         include: [{ association: 'socio' }]
-      }
+      },
+      { model: models.Horarios, as: 'horario', include: ['salon'] }
     ]
   })
 }
@@ -61,7 +62,7 @@ async function agregarProgramacion(programacion, options = {}) {
 }
 
 async function modificarProgramacion(id, cambio, options = {}) {
-  return await models.Programacion?.update(cambio, { where: id, ...options })
+  return await models.Programacion.update(cambio, { where: { id }, ...options })
 }
 
 module.exports = {
