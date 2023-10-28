@@ -2,12 +2,18 @@ const { format } = require('date-fns')
 const { models } = require('../libs/sequelize.js')
 const { Op } = require('sequelize')
 
-async function listarMaquinarias() {
-  return await models.Maquinarias.findAll({
+async function listarMaquinarias({ where = {}, orderBy }) {
+  const options = {
     where: {
-      borrado: false
+      borrado: false,
+      ...where
     }
-  })
+  }
+
+  if (orderBy) {
+    options.order = [orderBy]
+  }
+  return await models.Maquinarias.findAll(options)
 }
 
 async function contarCodigoMaquinaria() {

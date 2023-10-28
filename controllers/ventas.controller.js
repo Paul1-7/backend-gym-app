@@ -47,8 +47,8 @@ const obtenerVentasPorFecha = async (req, res, next) => {
     )
 
     const options = {
-      dateStart,
-      dateEnd,
+      dateStartISO: dateStart,
+      dateEndISO: dateEnd,
       orderBy: selectedOption.criteria
     }
 

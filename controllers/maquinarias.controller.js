@@ -1,3 +1,7 @@
+const {
+  EQUIPMENTS_REPORT_ORDER_BY,
+  EQUIPMENTS_REPORT_CRITERIA
+} = require('../constants/reports.js')
 const { ERROR_RESPONSE } = require('../middlewares/error.handle.js')
 const services = require('../services/maquinarias.service.js')
 const { generateCodeToDocuments } = require('../utils/dataHandler.js')
@@ -11,7 +15,17 @@ const msg = {
 
 const listarMaquinarias = async (req, res, next) => {
   try {
-    const maquinaria = await services.listarMaquinarias()
+    const { orderBy, criterio } = req.query
+
+    const selectedOrderBy = EQUIPMENTS_REPORT_ORDER_BY.find(
+      ({ id }) => id === orderBy
+    )
+    const selectedCriterio = EQUIPMENTS_REPORT_CRITERIA?.[criterio] ?? {}
+
+    const maquinaria = await services.listarMaquinarias({
+      where: selectedCriterio,
+      orderBy: selectedOrderBy?.criteria
+    })
     res.json(maquinaria)
   } catch (error) {
     next(error)

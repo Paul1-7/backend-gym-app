@@ -1,6 +1,6 @@
 const { Op } = require('sequelize')
 const { models } = require('../libs/sequelize.js')
-const { format } = require('date-fns')
+const { format, startOfDay, endOfDay } = require('date-fns')
 
 async function ListarVentas() {
   return await models.Ventas.findAll({
@@ -23,15 +23,14 @@ async function ContarCodigoVenta() {
 async function ListarVentasPersonalizada({ fechaInicio, fechaFin }) {
   const options = { include: ['socio', 'vendedor'] }
   const isRange = fechaInicio && fechaFin
-
   if (isRange) {
     options.where = {
-      fecha: { [Op.between]: [fechaInicio, fechaFin] }
+      fecha: { [Op.between]: [startOfDay(fechaInicio), endOfDay(fechaFin)] }
     }
   }
 
   options.where = {
-    fecha: { [Op.gte]: fechaInicio }
+    fecha: { [Op.gte]: startOfDay(fechaInicio) }
   }
 
   return await models.Ventas.findAll(options)
@@ -52,7 +51,9 @@ async function BuscarVenta(id) {
   })
 }
 
-async function obtenerVentasPorFecha({ dateStart, dateEnd, orderBy }) {
+async function obtenerVentasPorFecha({ dateStartISO, dateEndISO, orderBy }) {
+  const dateStart = startOfDay(new Date(dateStartISO)).toISOString()
+  const dateEnd = endOfDay(new Date(dateEndISO)).toISOString()
   const options = {
     include: ['socio', 'vendedor'],
     where: {

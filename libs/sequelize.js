@@ -4,7 +4,7 @@ const setupModels = require('./../db/models/index.js')
 
 const options = {
   dialect: 'postgres',
-  logging: false
+  logging: true
 }
 
 if (config.ISPROD) {
@@ -21,4 +21,3 @@ setupModels(sequelize)
 
 // sequelize.sync({ force: true })
 module.exports = sequelize
-
