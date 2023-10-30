@@ -11,7 +11,7 @@ module.exports = {
           precio_compra: 34.7,
           precio_venta: 48,
           stock: 3,
-          tiene_vencimiento: false,
+          tiene_vencimiento: true,
           fecha_vencimiento: '2021-10-17'
         },
         {
@@ -20,7 +20,7 @@ module.exports = {
           precio_compra: 57,
           precio_venta: 193.6,
           stock: 32,
-          tiene_vencimiento: false,
+          tiene_vencimiento: true,
           fecha_vencimiento: '2022-08-02'
         },
         {
@@ -30,7 +30,7 @@ module.exports = {
           precio_venta: 92.8,
           stock: 5,
           tiene_vencimiento: false,
-          fecha_vencimiento: '2021-08-31'
+          fecha_vencimiento: null
         },
         {
           id: 'ea6f9e29-3715-434a-93bd-76d9e578c156',
@@ -38,7 +38,7 @@ module.exports = {
           precio_compra: 149.7,
           precio_venta: 29.6,
           stock: 12,
-          tiene_vencimiento: true,
+          tiene_vencimiento: false,
           fecha_vencimiento: null
         }
       ],

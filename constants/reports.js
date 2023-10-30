@@ -74,8 +74,8 @@ const EQUIPMENTS_REPORT_CRITERIA = {
 }
 const PRODUCTS_REPORT_CRITERIA = {
   1: {},
-  2: { tieneVencimiento: false },
-  3: { tieneVencimiento: true }
+  2: { tieneVencimiento: true },
+  3: { tieneVencimiento: false }
 }
 
 module.exports = {
