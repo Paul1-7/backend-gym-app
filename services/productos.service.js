@@ -2,8 +2,15 @@ const { Op } = require('sequelize')
 const { models } = require('../libs/sequelize.js')
 const msg = require('../utils/validationsMsg.js')
 
-async function ListarProductos() {
-  return await models.Productos.findAll()
+async function ListarProductos({ where = {}, orderBy }) {
+  const options = {
+    where
+  }
+
+  if (orderBy) {
+    options.order = [orderBy]
+  }
+  return await models.Productos.findAll(options)
 }
 
 async function BuscarProducto(id) {

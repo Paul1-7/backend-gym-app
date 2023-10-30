@@ -1,3 +1,7 @@
+const {
+  PRODUCTS_REPORT_ORDER_BY,
+  PRODUCTS_REPORT_CRITERIA
+} = require('../constants/reports.js')
 const { ERROR_RESPONSE } = require('../middlewares/error.handle.js')
 const services = require('../services/productos.service.js')
 
@@ -10,8 +14,17 @@ const msg = {
 
 const ListarProductos = async (req, res, next) => {
   try {
-    const salones = await services.ListarProductos()
-    res.json(salones)
+    const { orderBy, criterio } = req.query
+    const selectedOrderBy = PRODUCTS_REPORT_ORDER_BY.find(
+      ({ id }) => id === orderBy
+    )
+    const selectedCriterio = PRODUCTS_REPORT_CRITERIA?.[criterio] ?? {}
+
+    const products = await services.ListarProductos({
+      where: selectedCriterio,
+      orderBy: selectedOrderBy?.criteria
+    })
+    res.json(products)
   } catch (error) {
     next(error)
   }

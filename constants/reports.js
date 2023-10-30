@@ -43,15 +43,45 @@ const EQUIPMENTS_REPORT_ORDER_BY = [
   }
 ]
 
+const PRODUCTS_REPORT_ORDER_BY = [
+  {
+    id: '1',
+    criteria: ['nombre', 'DESC']
+  },
+  {
+    id: '2',
+    criteria: ['precioVenta', 'DESC']
+  },
+  {
+    id: '3',
+    criteria: ['precioCompra', 'DESC']
+  },
+  {
+    id: '4',
+    criteria: ['fechaVencimiento', 'DESC']
+  },
+  {
+    id: '5',
+    criteria: ['stock', 'DESC']
+  }
+]
+
 const EQUIPMENTS_REPORT_CRITERIA = {
   1: {},
   2: { estado: 'operativa' },
   3: { estado: 'en reparación' },
   4: { estado: 'fuera de servicio' }
 }
+const PRODUCTS_REPORT_CRITERIA = {
+  1: {},
+  2: { tieneVencimiento: false },
+  3: { tieneVencimiento: true }
+}
 
 module.exports = {
   SALES_REPORT_ORDER_BY,
   EQUIPMENTS_REPORT_ORDER_BY,
-  EQUIPMENTS_REPORT_CRITERIA
+  EQUIPMENTS_REPORT_CRITERIA,
+  PRODUCTS_REPORT_CRITERIA,
+  PRODUCTS_REPORT_ORDER_BY
 }
