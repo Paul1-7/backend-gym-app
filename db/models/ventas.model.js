@@ -34,7 +34,7 @@ const VentasSchema = {
     comment: 'identificador del socio',
     type: DataTypes.STRING,
     field: 'id_socio',
-    allowNull: false,
+    allowNull: true,
     validate: {
       isUUID: 4
     },

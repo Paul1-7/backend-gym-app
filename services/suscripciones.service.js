@@ -75,7 +75,7 @@ async function ListarSuscripciones() {
 }
 
 async function BuscarSuscripcion(id) {
-  return await models.Suscripciones.findByPk(id)
+  return await models.Suscripciones.findByPk(id, { include: 'socio' })
 }
 
 async function AgregarSuscripcion(suscripcion, options = {}) {

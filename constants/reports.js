@@ -16,6 +16,7 @@ const SALES_REPORT_ORDER_BY = [
     criteria: ['vendedor', 'nombre', 'DESC']
   }
 ]
+
 const EQUIPMENTS_REPORT_ORDER_BY = [
   {
     id: '1',

@@ -29,11 +29,7 @@ const UsuariosSchema = {
   apellidoP: {
     type: DataTypes.STRING,
     field: 'apellido_p',
-    allowNull: false,
-    validate: {
-      is: msg.isAlphanumeric,
-      notNull: msg.notNull
-    }
+    allowNull: true
   },
   apellidoM: {
     type: DataTypes.STRING,
