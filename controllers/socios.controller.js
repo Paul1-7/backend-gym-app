@@ -43,7 +43,7 @@ const BuscarSocios = async (req, res, next) => {
 const AgregarSocios = async (req, res, next) => {
   const transaction = await sequelize.transaction()
   try {
-    const { idPlan, cantidad, ...socio } = req.body
+    const { idPlan, cantidad, fechaInicio, fechaFin, ...socio } = req.body
     const rolSocio = await buscarRolPorNombre(SOCIO)
 
     const { id: idRol } = rolSocio
@@ -56,8 +56,8 @@ const AgregarSocios = async (req, res, next) => {
         idPlan,
         cantidad,
         idSocio: newsocios.toJSON().id,
-        fechaInicio: new Date(),
-        fechaFin: agregarDiasAFecha(plan.duracion),
+        fechaInicio,
+        fechaFin,
         montoCancelado: plan.precio * cantidad
       }
       await AgregarSuscripcion(newSuscripcion, { transaction })
