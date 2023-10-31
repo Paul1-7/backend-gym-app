@@ -1,6 +1,9 @@
 const { Model, DataTypes } = require('sequelize')
 const msg = require('../../utils/validationsMsg.js')
-const { CATEGORY_TABLE } = require('./categorias.model.js')
+
+const {
+  CATEGORIAS_DISCIPLINAS_TABLE
+} = require('./categoriasDisciplinas.model.js')
 
 const DISCIPLINAS_TABLE = 'Disciplinas'
 
@@ -14,7 +17,6 @@ const DisciplinasSchema = {
       isUUID: 4
     }
   },
-
   nombre: {
     type: DataTypes.STRING,
     allowNull: false,
@@ -39,6 +41,19 @@ const DisciplinasSchema = {
     validate: {
       is: msg.isState
     }
+  },
+  idCategoria: {
+    type: DataTypes.STRING,
+    field: 'id_categoria',
+    references: {
+      model: CATEGORIAS_DISCIPLINAS_TABLE,
+      key: 'id'
+    },
+    validate: {
+      isUUID: 4
+    },
+    onUpdate: 'CASCADE',
+    onDelete: 'SET NULL'
   }
 }
 
@@ -50,9 +65,9 @@ class Disciplinas extends Model {
       foreignKey: 'idDisciplina'
     })
 
-    this.hasMany(models.Categorias_Disciplinas, {
-      as: 'categorias',
-      foreignKey: 'idDisciplina'
+    this.belongsTo(models.Categorias_Disciplinas, {
+      as: 'categoria',
+      foreignKey: 'idCategoria'
     })
   }
 

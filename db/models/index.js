@@ -18,7 +18,10 @@ const {
 } = require('./detalleVentas.model.js')
 const { Programacion, ProgramacionSchema } = require('./programacion.model.js')
 const { Equipment, EquipmentSchema } = require('./maquinarias.model.js')
-const { Categories, CategoriesSchema } = require('./categorias.model.js')
+const {
+  CategoriesEquipments,
+  CategoriesEquipmentsSchema
+} = require('./categoriasMaquinarias.model.js')
 const {
   DetalleProgramacion,
   DetalleProgramacionSchema
@@ -32,12 +35,27 @@ const {
   CategoriasDisciplinasSchema
 } = require('./categoriasDisciplinas.model.js')
 const {
-  CategoriasMaquinarias,
-  CategoriasMaquinariasSchema
-} = require('./categoriasMaquinarias.model.js')
+  CategoriasMaquinariasRelation,
+  CategoriasMaquinariasRelationSchema
+} = require('./categoriasMaquinariasRelacion.model.js')
 
 function setUpModels(sequelize) {
-  Categories.init(CategoriesSchema, Categories.config(sequelize))
+  CategoriesEquipments.init(
+    CategoriesEquipmentsSchema,
+    CategoriesEquipments.config(sequelize)
+  )
+  CategoriasProductos.init(
+    CategoriasProductosSchema,
+    CategoriasProductos.config(sequelize)
+  )
+  CategoriasDisciplinas.init(
+    CategoriasDisciplinasSchema,
+    CategoriasDisciplinas.config(sequelize)
+  )
+  CategoriasMaquinariasRelation.init(
+    CategoriasMaquinariasRelationSchema,
+    CategoriasMaquinariasRelation.config(sequelize)
+  )
   Usuarios.init(UsuariosSchema, Usuarios.config(sequelize))
   Planes.init(PlanesSchema, Planes.config(sequelize))
   Rooms.init(RoomsSchema, Rooms.config(sequelize))
@@ -55,21 +73,9 @@ function setUpModels(sequelize) {
     DetalleProgramacionSchema,
     DetalleProgramacion.config(sequelize)
   )
-  CategoriasProductos.init(
-    CategoriasProductosSchema,
-    CategoriasProductos.config(sequelize)
-  )
-  CategoriasDisciplinas.init(
-    CategoriasDisciplinasSchema,
-    CategoriasDisciplinas.config(sequelize)
-  )
-  CategoriasMaquinarias.init(
-    CategoriasMaquinariasSchema,
-    CategoriasMaquinarias.config(sequelize)
-  )
 
   Usuarios.associate(sequelize.models)
-  Categories.associate(sequelize.models)
+  CategoriesEquipments.associate(sequelize.models)
   Horarios.associate(sequelize.models)
   Productos.associate(sequelize.models)
   Rol.associate(sequelize.models)
@@ -84,7 +90,7 @@ function setUpModels(sequelize) {
   DetalleProgramacion.associate(sequelize.models)
   CategoriasProductos.associate(sequelize.models)
   CategoriasDisciplinas.associate(sequelize.models)
-  CategoriasMaquinarias.associate(sequelize.models)
+  CategoriasMaquinariasRelation.associate(sequelize.models)
 }
 
 module.exports = setUpModels

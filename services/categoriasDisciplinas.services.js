@@ -1,27 +1,43 @@
 const { models } = require('../libs/sequelize.js')
 
-async function agregarCategoriasDisciplinas(data, options = {}) {
-  return await models.Categorias_Disciplinas.bulkCreate(data, options)
+async function listarCategoriasDisciplinas({ where = {}, orderBy } = {}) {
+  const options = {
+    where: {
+      estado: 1,
+      ...where
+    }
+  }
+
+  if (orderBy) {
+    options.order = [orderBy]
+  }
+  return await models.Categorias_Disciplinas.findAll(options)
 }
 
-async function eliminarCategoriasDisciplinas(idCategoria, options = {}) {
-  return await models.Categorias_Disciplinas.destroy({
-    where: { idCategoria },
-    ...options
+async function buscarCategoriaDisciplina(id) {
+  return await models.Categorias_Disciplinas.findByPk(id, {
+    where: {
+      estado: 1
+    }
   })
 }
 
-async function actualizarCategoriasDisciplinas(
-  idCategoria,
-  data,
-  options = {}
-) {
-  await eliminarCategoriasDisciplinas(idCategoria, options)
-  await agregarCategoriasDisciplinas(data, options)
+async function agregarCategoriaDisciplina(salon) {
+  return await models.Categorias_Disciplinas.create(salon)
+}
+
+async function modificarCategoriaDisciplina(id, cambio) {
+  return await models.Categorias_Disciplinas.update(cambio, { where: { id } })
+}
+
+async function eliminarCategoriaDisciplina(id) {
+  return models.Categorias_Disciplinas.update({ estado: 0 }, { where: { id } })
 }
 
 module.exports = {
-  agregarCategoriasDisciplinas,
-  eliminarCategoriasDisciplinas,
-  actualizarCategoriasDisciplinas
+  listarCategoriasDisciplinas,
+  buscarCategoriaDisciplina,
+  agregarCategoriaDisciplina,
+  modificarCategoriaDisciplina,
+  eliminarCategoriaDisciplina
 }

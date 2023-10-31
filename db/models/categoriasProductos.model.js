@@ -1,7 +1,5 @@
 const { Model, DataTypes } = require('sequelize')
-const { PRODUCTOS_TABLE } = require('./productos.model.js')
-const { CATEGORY_TABLE } = require('./categorias.model.js')
-
+const msg = require('../../utils/validationsMsg')
 const CATEGORIAS_PRODUCTOS_TABLE = 'Categorias_Productos'
 
 const CategoriasProductosSchema = {
@@ -14,45 +12,25 @@ const CategoriasProductosSchema = {
       isUUID: 4
     }
   },
-  idCategoria: {
-    primaryKey: true,
+  nombre: {
     type: DataTypes.STRING,
-    field: 'id_categoria',
-    references: {
-      model: CATEGORY_TABLE,
-      key: 'id'
-    },
-    validate: {
-      isUUID: 4
-    },
-    onUpdate: 'CASCADE',
-    onDelete: 'CASCADE'
+    allowNull: false
   },
-  idProducto: {
-    primaryKey: true,
-    type: DataTypes.STRING,
-    field: 'id_producto',
-    references: {
-      model: PRODUCTOS_TABLE,
-      key: 'id'
-    },
+  estado: {
+    type: DataTypes.INTEGER,
+    allowNull: false,
+    defaultValue: 1,
     validate: {
-      isUUID: 4
-    },
-    onUpdate: 'CASCADE',
-    onDelete: 'SET NULL'
+      is: msg.isState
+    }
   }
 }
 
 class CategoriasProductos extends Model {
   static associate(models) {
-    this.belongsTo(models.Categorias, {
+    this.hasMany(models.Productos, {
       foreignKey: 'idCategoria',
-      as: 'categoria'
-    })
-    this.belongsTo(models.Productos, {
-      foreignKey: 'idProducto',
-      as: 'producto'
+      as: 'productos'
     })
   }
 

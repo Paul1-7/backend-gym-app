@@ -1,6 +1,7 @@
 const { Model, DataTypes } = require('sequelize')
 const msg = require('../../utils/validationsMsg.js')
-const { CATEGORY_TABLE } = require('./categorias.model.js')
+const { CATEGORY_TABLE } = require('./categoriasMaquinarias.model.js')
+const { CATEGORIAS_PRODUCTOS_TABLE } = require('./categoriasProductos.model.js')
 
 const PRODUCTOS_TABLE = 'Productos'
 
@@ -90,6 +91,19 @@ const ProductosSchema = {
     type: DataTypes.BOOLEAN,
     comment: 'informacion si tine vencimiento producto',
     allowNull: false
+  },
+  idCategoria: {
+    type: DataTypes.STRING,
+    field: 'id_categoria',
+    references: {
+      model: CATEGORIAS_PRODUCTOS_TABLE,
+      key: 'id'
+    },
+    validate: {
+      isUUID: 4
+    },
+    onUpdate: 'CASCADE',
+    onDelete: 'CASCADE'
   }
 }
 
@@ -100,9 +114,9 @@ class Productos extends Model {
       foreignKey: 'id'
     })
 
-    this.hasMany(models.Categorias_Productos, {
-      as: 'categorias',
-      foreignKey: 'idProducto'
+    this.belongsTo(models.Categorias_Productos, {
+      as: 'categoria',
+      foreignKey: 'idCategoria'
     })
   }
 

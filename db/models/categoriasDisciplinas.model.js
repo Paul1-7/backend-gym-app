@@ -1,7 +1,5 @@
 const { Model, DataTypes } = require('sequelize')
-const { CATEGORY_TABLE } = require('./categorias.model.js')
-const { DISCIPLINAS_TABLE } = require('./disciplinas.model.js')
-
+const msg = require('../../utils/validationsMsg')
 const CATEGORIAS_DISCIPLINAS_TABLE = 'Categorias_Disciplinas'
 
 const CategoriasDisciplinasSchema = {
@@ -14,45 +12,25 @@ const CategoriasDisciplinasSchema = {
       isUUID: 4
     }
   },
-  idCategoria: {
-    primaryKey: true,
+  nombre: {
     type: DataTypes.STRING,
-    field: 'id_categoria',
-    references: {
-      model: CATEGORY_TABLE,
-      key: 'id'
-    },
-    validate: {
-      isUUID: 4
-    },
-    onUpdate: 'CASCADE',
-    onDelete: 'CASCADE'
+    allowNull: false
   },
-  idDisciplina: {
-    primaryKey: true,
-    type: DataTypes.STRING,
-    field: 'id_disciplina',
-    references: {
-      model: DISCIPLINAS_TABLE,
-      key: 'id'
-    },
+  estado: {
+    type: DataTypes.INTEGER,
+    allowNull: false,
+    defaultValue: 1,
     validate: {
-      isUUID: 4
-    },
-    onUpdate: 'CASCADE',
-    onDelete: 'SET NULL'
+      is: msg.isState
+    }
   }
 }
 
 class CategoriasDisciplinas extends Model {
   static associate(models) {
-    this.belongsTo(models.Categorias, {
-      foreignKey: 'idCategoria',
-      as: 'categoria'
-    })
-    this.belongsTo(models.Disciplinas, {
-      foreignKey: 'idDisciplina',
-      as: 'disciplina'
+    this.hasMany(models.Disciplinas, {
+      as: 'disciplinas',
+      foreignKey: 'idCategoria'
     })
   }
 

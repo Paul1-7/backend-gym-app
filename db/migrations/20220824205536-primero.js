@@ -14,23 +14,36 @@ const { VentasSchema } = require('../models/ventas.model')
 const { DetalleVentasSchema } = require('../models/detalleVentas.model')
 const { ProgramacionSchema } = require('../models/programacion.model')
 const { EquipmentSchema } = require('../models/maquinarias.model')
-const { CategoriesSchema } = require('../models/categorias.model')
 const {
-  CategoriasProductosSchema
-} = require('../models/categoriasProductos.model')
-const {
-  CategoriasMaquinariasSchema
+  CategoriesEquipmentsSchema
 } = require('../models/categoriasMaquinarias.model')
 const {
   CategoriasDisciplinasSchema
 } = require('../models/categoriasDisciplinas.model')
+const {
+  CategoriasProductosSchema
+} = require('../models/categoriasProductos.model')
+const {
+  CategoriasMaquinariasRelationSchema
+} = require('../models/categoriasMaquinariasRelacion.model')
 const {
   DetalleProgramacionSchema
 } = require('../models/detalleProgramacion.model')
 
 module.exports = {
   async up(queryInterface) {
-    await queryInterface.createTable('Categorias', CategoriesSchema)
+    await queryInterface.createTable(
+      'Categorias_Maquinarias',
+      CategoriesEquipmentsSchema
+    )
+    await queryInterface.createTable(
+      'Categorias_Productos',
+      CategoriasProductosSchema
+    )
+    await queryInterface.createTable(
+      'Categorias_Disciplinas',
+      CategoriasDisciplinasSchema
+    )
     await queryInterface.createTable('Usuarios', UsuariosSchema)
     await queryInterface.createTable('Planes', PlanesSchema)
     await queryInterface.createTable('Salones', RoomsSchema)
@@ -49,23 +62,12 @@ module.exports = {
       DetalleProgramacionSchema
     )
     await queryInterface.createTable(
-      'Categorias_Productos',
-      CategoriasProductosSchema
-    )
-    await queryInterface.createTable(
-      'Categorias_Maquinarias',
-      CategoriasMaquinariasSchema
-    )
-    await queryInterface.createTable(
-      'Categorias_Disciplinas',
-      CategoriasDisciplinasSchema
+      'Categorias_Maquinarias_Relacion',
+      CategoriasMaquinariasRelationSchema
     )
   },
 
   async down(queryInterface) {
-    await queryInterface.dropTable('Categorias_Productos')
-    await queryInterface.dropTable('Categorias_Maquinarias')
-    await queryInterface.dropTable('Categorias_Disciplinas')
     await queryInterface.dropTable('Detalle_Programacion')
     await queryInterface.dropTable('Programacion')
     await queryInterface.dropTable('Roles_Usuarios')
@@ -79,7 +81,10 @@ module.exports = {
     await queryInterface.dropTable('Salones')
     await queryInterface.dropTable('Productos')
     await queryInterface.dropTable('Planes')
+    await queryInterface.dropTable('Categorias_Maquinarias_Relacion')
     await queryInterface.dropTable('Maquinarias')
-    await queryInterface.dropTable('Categorias')
+    await queryInterface.dropTable('Categorias_Maquinarias')
+    await queryInterface.dropTable('Categorias_Productos')
+    await queryInterface.dropTable('Categorias_Disciplinas')
   }
 }

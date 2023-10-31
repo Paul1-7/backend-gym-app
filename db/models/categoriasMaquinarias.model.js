@@ -1,10 +1,9 @@
 const { Model, DataTypes } = require('sequelize')
-const { CATEGORY_TABLE } = require('./categorias.model.js')
-const { EQUIPMENT_TABLE } = require('./maquinarias.model.js')
+const msg = require('../../utils/validationsMsg.js')
 
-const CATEGORIAS_MAQUINARIAS_TABLE = 'Categorias_Maquinarias'
+const CATEGORY_EQUIPMENT_TABLE = 'Categorias_Maquinarias'
 
-const CategoriasMaquinariasSchema = {
+const CategoriesEquipmentsSchema = {
   id: {
     allowNull: false,
     primaryKey: true,
@@ -14,60 +13,44 @@ const CategoriasMaquinariasSchema = {
       isUUID: 4
     }
   },
-  idCategoria: {
-    primaryKey: true,
-    type: DataTypes.STRING,
-    field: 'id_categoria',
-    references: {
-      model: CATEGORY_TABLE,
-      key: 'id'
-    },
+  nombre: {
+    type: DataTypes.TEXT,
+    allowNull: false,
     validate: {
-      isUUID: 4
-    },
-    onUpdate: 'CASCADE',
-    onDelete: 'CASCADE'
+      is: msg.isAlphanumeric,
+      notNull: msg.notNull
+    }
   },
-  idMaquinaria: {
-    primaryKey: true,
-    type: DataTypes.STRING,
-    field: 'id_maquinaria',
-    references: {
-      model: EQUIPMENT_TABLE,
-      key: 'id'
-    },
+  estado: {
+    type: DataTypes.INTEGER,
+    allowNull: false,
+    defaultValue: 1,
     validate: {
-      isUUID: 4
-    },
-    onUpdate: 'CASCADE',
-    onDelete: 'SET NULL'
+      is: msg.isState
+    }
   }
 }
 
-class CategoriasMaquinarias extends Model {
+class CategoriesEquipments extends Model {
   static associate(models) {
-    this.belongsTo(models.Categorias, {
-      foreignKey: 'idCategoria',
-      as: 'categoria'
-    })
-    this.belongsTo(models.Maquinarias, {
-      foreignKey: 'idMaquinaria',
-      as: 'maquinaria'
+    this.hasMany(models.Categorias_Maquinarias_Relacion, {
+      as: 'maquinarias',
+      foreignKey: 'idCategoria'
     })
   }
 
   static config(sequelize) {
     return {
       sequelize,
-      tableName: CATEGORIAS_MAQUINARIAS_TABLE,
-      modelName: CATEGORIAS_MAQUINARIAS_TABLE,
+      tableName: CATEGORY_EQUIPMENT_TABLE,
+      modelName: CATEGORY_EQUIPMENT_TABLE,
       timestamps: false
     }
   }
 }
 
 module.exports = {
-  CategoriasMaquinarias,
-  CategoriasMaquinariasSchema,
-  CATEGORIAS_MAQUINARIAS_TABLE
+  CategoriesEquipments,
+  CategoriesEquipmentsSchema,
+  CATEGORY_EQUIPMENT_TABLE
 }
