@@ -7,7 +7,14 @@ async function listarMaquinarias({ where = {}, orderBy }) {
     where: {
       borrado: false,
       ...where
-    }
+    },
+    include: [
+      {
+        model: models.Categorias_Maquinarias,
+        through: { attributes: [] },
+        as: 'categorias'
+      }
+    ]
   }
 
   if (orderBy) {
@@ -32,12 +39,19 @@ async function buscarMaquinaria(id) {
   return await models.Maquinarias.findByPk(id, {
     where: {
       borrado: false
-    }
+    },
+    include: [
+      {
+        model: models.Categorias_Maquinarias,
+        through: { attributes: [] },
+        as: 'categorias'
+      }
+    ]
   })
 }
 
-async function agregarMaquinaria(salon) {
-  return await models.Maquinarias.create(salon)
+async function agregarMaquinaria(data, options = {}) {
+  return await models.Maquinarias.create(data, options)
 }
 
 async function modificarMaquinaria(id, cambio) {

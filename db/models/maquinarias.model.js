@@ -71,9 +71,11 @@ const EquipmentSchema = {
 
 class Equipment extends Model {
   static associate(models) {
-    this.hasMany(models.Categorias_Maquinarias, {
+    this.belongsToMany(models.Categorias_Maquinarias, {
       as: 'categorias',
-      foreignKey: 'idMaquinaria'
+      foreignKey: 'idMaquinaria',
+      otherKey: 'idCategoria',
+      through: models.Categorias_Maquinarias_Relacion
     })
   }
 

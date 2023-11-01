@@ -76,6 +76,7 @@ function setUpModels(sequelize) {
 
   Usuarios.associate(sequelize.models)
   CategoriesEquipments.associate(sequelize.models)
+  Equipment.associate(sequelize.models)
   Horarios.associate(sequelize.models)
   Productos.associate(sequelize.models)
   Rol.associate(sequelize.models)

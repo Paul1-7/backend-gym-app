@@ -5,21 +5,21 @@ async function agregarCategoriasMaquinariasRelacion(data, options = {}) {
 }
 
 async function eliminarCategoriasMaquinariasRelacion(
-  idCategoria,
+  idMaquinaria,
   options = {}
 ) {
   return await models.Categorias_Maquinarias_Relacion.destroy({
-    where: { idCategoria },
+    where: { idMaquinaria },
     ...options
   })
 }
 
 async function actualizarCategoriasMaquinariasRelacion(
-  idCategoria,
+  idMaquinaria,
   data,
   options = {}
 ) {
-  await eliminarCategoriasMaquinariasRelacion(idCategoria, options)
+  await eliminarCategoriasMaquinariasRelacion(idMaquinaria, options)
   return await agregarCategoriasMaquinariasRelacion(data, options)
 }
 

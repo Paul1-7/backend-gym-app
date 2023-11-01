@@ -12,7 +12,8 @@ module.exports = {
           precio_venta: 48,
           stock: 3,
           tiene_vencimiento: true,
-          fecha_vencimiento: '2021-10-17'
+          fecha_vencimiento: '2021-10-17',
+          id_categoria: 'ebe0f988-2f9c-4fdf-b32e-cc3ee77b36c7'
         },
         {
           id: '14f23bde-837c-4f51-bb6a-2ddce96f4728',
@@ -21,25 +22,8 @@ module.exports = {
           precio_venta: 193.6,
           stock: 32,
           tiene_vencimiento: true,
-          fecha_vencimiento: '2022-08-02'
-        },
-        {
-          id: 'fa4eebc4-b6fc-4028-a027-0e7a5477372e',
-          nombre: 'Tasty Cotton Pizza',
-          precio_compra: 33.4,
-          precio_venta: 92.8,
-          stock: 5,
-          tiene_vencimiento: false,
-          fecha_vencimiento: null
-        },
-        {
-          id: 'ea6f9e29-3715-434a-93bd-76d9e578c156',
-          nombre: 'Practical Steel Chair',
-          precio_compra: 149.7,
-          precio_venta: 29.6,
-          stock: 12,
-          tiene_vencimiento: false,
-          fecha_vencimiento: null
+          fecha_vencimiento: '2022-08-02',
+          id_categoria: '65ac9539-c1d3-45c9-bc37-6b618dba754f'
         }
       ],
       {}

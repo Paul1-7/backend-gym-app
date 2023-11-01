@@ -3,7 +3,9 @@ const { models } = require('../libs/sequelize.js')
 const msg = require('../utils/validationsMsg.js')
 
 async function ListarDisciplinas() {
-  return await models.Disciplinas.findAll()
+  return await models.Disciplinas.findAll({
+    include: ['categoria']
+  })
 }
 
 async function BuscarDisciplinas(id) {
@@ -28,14 +30,11 @@ async function ModificarDisciplinas(id, cambio) {
 }
 
 async function EliminarDisciplinas(id) {
-  const discipline = await models.Disciplinas.findByPk(id,{
-    include:['horarios']
+  const discipline = await models.Disciplinas.findByPk(id, {
+    include: ['horarios']
   })
 
-  if (
-    discipline.horarios.length > 0 
-  )
-    return new Error(msg.msgErrorForeignKey)
+  if (discipline.horarios.length > 0) return new Error(msg.msgErrorForeignKey)
 
   return await discipline?.destroy()
 }

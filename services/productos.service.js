@@ -4,7 +4,8 @@ const msg = require('../utils/validationsMsg.js')
 
 async function ListarProductos({ where = {}, orderBy }) {
   const options = {
-    where
+    where,
+    include: ['categoria']
   }
 
   if (orderBy) {
