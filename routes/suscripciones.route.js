@@ -6,7 +6,8 @@ const {
   ListaReporteSuscripciones,
   ListarReportesPorRenovacion,
   ReporteDeResultados,
-  BuscarUltimasSuscripciones
+  BuscarUltimasSuscripciones,
+  modificarSuscripcion
 } = require('../controllers/suscripciones.controller.js')
 
 const { checkId } = require('../middlewares/validator.handle.js')
@@ -21,5 +22,6 @@ Suscripciones.get('/ultima-suscripcion/:idSocio', BuscarUltimasSuscripciones)
 Suscripciones.get('/:id', checkId, BuscarSuscripcion)
 
 Suscripciones.post('/', AgregarSuscripcion)
+Suscripciones.put('/:id', modificarSuscripcion)
 
 module.exports = Suscripciones

@@ -119,6 +119,22 @@ const AgregarSuscripcion = async (req, res, next) => {
   }
 }
 
+const modificarSuscripcion = async (req, res, next) => {
+  try {
+    const { id } = req.params
+
+    let { body } = req
+    suscripcion = {
+      fechaInicio: body.fechaInicio,
+      fechaFin: body.fechaFin
+    }
+    await services.ModificarSuscripcion(id, suscripcion)
+    res.json({ message: msg.addSuccess })
+  } catch (error) {
+    next(error)
+  }
+}
+
 const EliminarSuscripcion = async (req, res, next) => {
   try {
     const { id } = req.params
@@ -136,6 +152,7 @@ module.exports = {
   ListarSuscripciones,
   BuscarSuscripcion,
   AgregarSuscripcion,
+  modificarSuscripcion,
   EliminarSuscripcion,
   ListaReporteSuscripciones,
   ListarReportesPorRenovacion,
