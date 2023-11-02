@@ -1,6 +1,7 @@
 const { Op } = require('sequelize')
 const { models } = require('../libs/sequelize.js')
 const { add } = require('date-fns')
+const ROLES = require('../config/roles.js')
 
 async function agregarHorario(data, options = {}) {
   return await models.Horarios.create(data, options)
@@ -12,6 +13,49 @@ async function ListarHorarios(query = '') {
     where: {
       estado: 1,
       ...query
+    }
+  })
+}
+
+async function obtenerHorariosEntrenadores() {
+  return await models.Horarios.findAll({
+    attributes: {
+      exclude: ['idEntrenador', 'idDisciplina', 'idSalon']
+    },
+    include: [
+      {
+        model: models.Salones,
+        as: 'salon',
+        attributes: ['id', 'nombre', 'capacidad']
+      },
+      {
+        model: models.Usuarios,
+        as: 'entrenador',
+        attributes: ['id', 'nombre', 'apellidoP', 'apellidoM'],
+        include: [
+          {
+            model: models.Roles,
+            as: 'roles',
+            attributes: {
+              exclude: ['estado']
+            },
+            through: {
+              attributes: []
+            },
+            where: {
+              nombre: ROLES.ENTRENADOR
+            }
+          }
+        ]
+      },
+      {
+        model: models.Disciplinas,
+        as: 'disciplina',
+        attributes: ['id', 'nombre']
+      }
+    ],
+    where: {
+      estado: 1
     }
   })
 }
@@ -59,5 +103,6 @@ module.exports = {
   eliminarHorarios,
   modificarHorarios,
   ListarHorarios,
-  verificarDisponibilidad
+  verificarDisponibilidad,
+  obtenerHorariosEntrenadores
 }

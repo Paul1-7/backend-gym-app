@@ -4,7 +4,33 @@ const { format } = require('date-fns')
 
 async function listarProgramacion(query = '') {
   return await models.Programacion.findAll({
-    include: ['entrenador', 'disciplina'],
+    include: [
+      {
+        model: models.Detalle_Programacion,
+        as: 'detalle'
+      },
+      {
+        model: models.Horarios,
+        as: 'horario',
+        include: [
+          {
+            model: models.Usuarios,
+            as: 'entrenador',
+            attributes: ['id', 'nombre', 'apellidoP']
+          },
+          {
+            model: models.Disciplinas,
+            as: 'disciplina',
+            attributes: ['id', 'nombre']
+          },
+          {
+            model: models.Salones,
+            as: 'salon',
+            attributes: ['id', 'nombre', 'capacidad']
+          }
+        ]
+      }
+    ],
     where: {
       ...query
     }
@@ -24,7 +50,7 @@ async function contarCodigoProgramacion() {
 }
 
 async function listarProgramacionPersonalizada({ fechaInicio, fechaFin }) {
-  const options = { include: ['entrenador', 'disciplina'] }
+  const options = { include: ['horarios'] }
   const isRange = fechaInicio && fechaFin
 
   if (isRange) {
@@ -43,14 +69,32 @@ async function listarProgramacionPersonalizada({ fechaInicio, fechaFin }) {
 async function buscarProgramacion(id) {
   return await models.Programacion.findByPk(id, {
     include: [
-      'entrenador',
-      'disciplina',
       'detalle',
       {
         association: 'detalle',
         include: [{ association: 'socio' }]
       },
-      { model: models.Horarios, as: 'horario', include: ['salon'] }
+      {
+        model: models.Horarios,
+        as: 'horario',
+        include: [
+          {
+            model: models.Usuarios,
+            as: 'entrenador',
+            attributes: ['id', 'nombre', 'apellidoP']
+          },
+          {
+            model: models.Disciplinas,
+            as: 'disciplina',
+            attributes: ['id', 'nombre']
+          },
+          {
+            model: models.Salones,
+            as: 'salon',
+            attributes: ['id', 'nombre', 'capacidad']
+          }
+        ]
+      }
     ]
   })
 }

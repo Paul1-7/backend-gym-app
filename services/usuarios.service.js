@@ -1,4 +1,4 @@
-const { Op } = require('sequelize')
+const { Op, where } = require('sequelize')
 const { models } = require('../libs/sequelize.js')
 const msg = require('../utils/validationsMsg.js')
 const { eliminarRolUsuario } = require('./rolesUsuarios.services')
@@ -10,7 +10,7 @@ async function obtenerUsuariosPorRol(active = false, rolNames, query = {}) {
       '$roles.nombre$': { [Op.in]: rolNames },
       ...query
     },
-    include: ['roles', 'horarios', 'programaciones']
+    include: ['roles', 'horarios']
   }
 
   if (active) options.where.estado = 1

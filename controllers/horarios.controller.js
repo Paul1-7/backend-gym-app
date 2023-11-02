@@ -31,6 +31,15 @@ const listarHorarios = async (req, res, next) => {
   }
 }
 
+const listarHorariosEntrenadores = async (req, res, next) => {
+  try {
+    const entrenadores = await services.obtenerHorariosEntrenadores()
+    res.json(entrenadores)
+  } catch (error) {
+    next(error)
+  }
+}
+
 const buscarHorarios = async (req, res, next) => {
   try {
     const { id } = req.params
@@ -100,5 +109,6 @@ module.exports = {
   modificarHorario,
   buscarHorarios,
   agregarHorario,
-  eliminarHorario
+  eliminarHorario,
+  listarHorariosEntrenadores
 }

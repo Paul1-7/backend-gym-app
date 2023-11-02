@@ -100,11 +100,6 @@ class Usuarios extends Model {
       foreignKey: 'idEntrenador'
     })
 
-    this.hasMany(models.Programacion, {
-      as: 'programaciones',
-      foreignKey: 'idEntrenador'
-    })
-
     this.hasMany(models.Ventas, {
       foreignKey: 'idVendedor',
       sourceKey: 'id',
