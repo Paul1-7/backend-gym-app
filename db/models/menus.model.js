@@ -1,9 +1,9 @@
 const { Model, DataTypes } = require('sequelize')
 const msg = require('../../utils/validationsMsg.js')
 
-const ROL_TABLE = 'Roles'
+const MENUS_TABLE = 'Menus'
 
-const RolSchema = {
+const MenusSchema = {
   id: {
     allowNull: false,
     primaryKey: true,
@@ -32,24 +32,22 @@ const RolSchema = {
   }
 }
 
-class Rol extends Model {
+class Menus extends Model {
   static associate(models) {
-    this.belongsToMany(models.Submenus, {
+    this.hasMany(models.Submenus, {
       as: 'submenus',
-      through: models.Roles_Submenus,
-      otherKey: 'idSubmenu',
-      foreignKey: 'idRol'
+      foreignKey: 'idMenu'
     })
   }
 
   static config(sequelize) {
     return {
       sequelize,
-      tableName: ROL_TABLE,
-      modelName: ROL_TABLE,
+      tableName: MENUS_TABLE,
+      modelName: MENUS_TABLE,
       timestamps: false
     }
   }
 }
 
-module.exports = { Rol, RolSchema, ROL_TABLE }
+module.exports = { Menus, MenusSchema, MENUS_TABLE }

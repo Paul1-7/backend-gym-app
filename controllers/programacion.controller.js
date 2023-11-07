@@ -26,6 +26,18 @@ const listarProgramaciones = async (req, res, next) => {
   }
 }
 
+const obtenerInterseccionSociosProgramacion = async (req, res, next) => {
+  try {
+    const { query } = req
+    console.log('TCL: obtenerInterseccionSociosProgramacion -> query', query)
+
+    const data = await services.obtenerInterseccionSociosProgramacion(query)
+    res.json(data)
+  } catch (error) {
+    next(error)
+  }
+}
+
 const buscarProgramacionPorId = async (req, res, next) => {
   try {
     const { id } = req.params
@@ -100,5 +112,6 @@ module.exports = {
   listarProgramaciones,
   buscarProgramacionPorId,
   agregarProgramacion,
-  modificarProgramacion
+  modificarProgramacion,
+  obtenerInterseccionSociosProgramacion
 }

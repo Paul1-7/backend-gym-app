@@ -8,9 +8,6 @@ const {
 } = require('../config/roles.js')
 const sequelize = require('../libs/sequelize.js')
 const { ERROR_RESPONSE } = require('../middlewares/error.handle.js')
-const {
-  BuscarDisciplinasPorIds
-} = require('../services/disciplinas.service.js')
 
 const { obtenerRoles } = require('../services/roles.service.js')
 const {
@@ -19,11 +16,7 @@ const {
 } = require('../services/rolesUsuarios.services.js')
 
 const userServices = require('../services/usuarios.service.js')
-const {
-  sonDatosValidos,
-  agregarRolSocio,
-  agregarRolRecepcionista
-} = require('../utils/dataHandler.js')
+const { agregarRolSocio } = require('../utils/dataHandler.js')
 
 const msg = {
   employeeNotFound: 'Empleado no encontrado',
@@ -110,6 +103,7 @@ const modificarEmpleado = async (req, res, next) => {
     const { id } = req.params
     const { body } = req
     const { roles, ...dataUser } = body
+    console.log('TCL: modificarEmpleado -> roles', roles)
 
     const empleado = await userServices.actualizarUsuario(id, dataUser, {
       transaction
@@ -122,7 +116,7 @@ const modificarEmpleado = async (req, res, next) => {
     let newRoles = agregarRolSocio(allRoles, roles)
 
     const rolObject = newRoles.map((idRol) => ({ idRol }))
-    await actualizarRolUsuario(empleado.dataValues.id, rolObject, {
+    await actualizarRolUsuario(id, rolObject, {
       transaction
     })
 

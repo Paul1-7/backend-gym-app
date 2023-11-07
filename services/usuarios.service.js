@@ -27,7 +27,23 @@ async function buscarUsuario(id) {
 async function buscarUsuarioPorOpciones(options) {
   return await models.Usuarios.findOne({
     where: options,
-    include: ['roles']
+    include: [
+      {
+        model: models.Roles,
+        as: 'roles',
+        through: {
+          attributes: []
+        },
+        include: [
+          {
+            attributes: ['id'],
+            model: models.Submenus,
+            as: 'submenus',
+            through: { attributes: [] }
+          }
+        ]
+      }
+    ]
   })
 }
 

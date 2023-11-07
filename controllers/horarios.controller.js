@@ -1,4 +1,4 @@
-const { getWeek, getDay } = require('date-fns')
+const { getWeek, getDay, format, parseISO } = require('date-fns')
 const { ERROR_RESPONSE } = require('../middlewares/error.handle.js')
 const services = require('../services/horarios.service.js')
 
@@ -69,7 +69,12 @@ const agregarHorario = async (req, res, next) => {
       return ERROR_RESPONSE.notAcceptable(msg.notValid, res)
     }
 
-    await services.agregarHorario({ ...body, dia: day })
+    await services.agregarHorario({
+      ...body,
+      dia: day,
+      horaEntrada: format(parseISO(horarioEntrada), 'HH:mm:ss'),
+      horaSalida: format(parseISO(horarioEntrada), 'HH:mm:ss')
+    })
     res.json({ message: msg.addSuccess })
   } catch (error) {
     next(error)

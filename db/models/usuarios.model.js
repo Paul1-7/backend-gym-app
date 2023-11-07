@@ -64,6 +64,7 @@ const UsuariosSchema = {
     type: DataTypes.STRING,
     allowNull: true,
     defaultValue: null,
+    unique: true,
     validate: {
       is: msg.isAlphanumeric
     }

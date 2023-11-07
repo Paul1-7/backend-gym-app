@@ -29,6 +29,9 @@ const {
 const {
   DetalleProgramacionSchema
 } = require('../models/detalleProgramacion.model')
+const { MenusSchema } = require('../models/menus.model')
+const { SubmenusSchema } = require('../models/submenus.model')
+const { RolesSubmenusSchema } = require('../models/rolesSubmenus.model')
 
 module.exports = {
   async up(queryInterface) {
@@ -36,6 +39,8 @@ module.exports = {
       'Categorias_Maquinarias',
       CategoriesEquipmentsSchema
     )
+    await queryInterface.createTable('Menus', MenusSchema)
+    await queryInterface.createTable('Submenus', SubmenusSchema)
     await queryInterface.createTable(
       'Categorias_Productos',
       CategoriasProductosSchema
@@ -52,6 +57,7 @@ module.exports = {
     await queryInterface.createTable('Suscripciones', SuscripcionSchema)
     await queryInterface.createTable('Roles', RolSchema)
     await queryInterface.createTable('Roles_Usuarios', RolesUsuariosSchema)
+    await queryInterface.createTable('Roles_Submenus', RolesSubmenusSchema)
     await queryInterface.createTable('Horarios', HorariosSchema)
     await queryInterface.createTable('Ventas', VentasSchema)
     await queryInterface.createTable('Detalle_Ventas', DetalleVentasSchema)
@@ -71,6 +77,7 @@ module.exports = {
     await queryInterface.dropTable('Detalle_Programacion')
     await queryInterface.dropTable('Programacion')
     await queryInterface.dropTable('Roles_Usuarios')
+    await queryInterface.dropTable('Roles_Submenus')
     await queryInterface.dropTable('Detalle_Ventas')
     await queryInterface.dropTable('Ventas')
     await queryInterface.dropTable('Horarios')
@@ -86,5 +93,7 @@ module.exports = {
     await queryInterface.dropTable('Categorias_Maquinarias')
     await queryInterface.dropTable('Categorias_Productos')
     await queryInterface.dropTable('Categorias_Disciplinas')
+    await queryInterface.dropTable('Submenus')
+    await queryInterface.dropTable('Menus')
   }
 }

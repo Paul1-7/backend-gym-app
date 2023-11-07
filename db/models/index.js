@@ -38,6 +38,12 @@ const {
   CategoriasMaquinariasRelation,
   CategoriasMaquinariasRelationSchema
 } = require('./categoriasMaquinariasRelacion.model.js')
+const { Menus, MenusSchema } = require('./menus.model.js')
+const { SubmenusSchema, Submenus } = require('./submenus.model.js')
+const {
+  RolesSubmenus,
+  RolesSubmenusSchema
+} = require('./rolesSubmenus.model.js')
 
 function setUpModels(sequelize) {
   CategoriesEquipments.init(
@@ -56,6 +62,8 @@ function setUpModels(sequelize) {
     CategoriasMaquinariasRelationSchema,
     CategoriasMaquinariasRelation.config(sequelize)
   )
+  Menus.init(MenusSchema, Menus.config(sequelize))
+  Submenus.init(SubmenusSchema, Submenus.config(sequelize))
   Usuarios.init(UsuariosSchema, Usuarios.config(sequelize))
   Planes.init(PlanesSchema, Planes.config(sequelize))
   Rooms.init(RoomsSchema, Rooms.config(sequelize))
@@ -64,6 +72,7 @@ function setUpModels(sequelize) {
   Suscripcion.init(SuscripcionSchema, Suscripcion.config(sequelize))
   Rol.init(RolSchema, Rol.config(sequelize))
   RolesUsuarios.init(RolesUsuariosSchema, RolesUsuarios.config(sequelize))
+  RolesSubmenus.init(RolesSubmenusSchema, RolesSubmenus.config(sequelize))
   Horarios.init(HorariosSchema, Horarios.config(sequelize))
   Ventas.init(VentasSchema, Ventas.config(sequelize))
   DetalleVentas.init(DetalleVentasSchema, DetalleVentas.config(sequelize))
@@ -75,12 +84,15 @@ function setUpModels(sequelize) {
   )
 
   Usuarios.associate(sequelize.models)
+  Menus.associate(sequelize.models)
+  Submenus.associate(sequelize.models)
   CategoriesEquipments.associate(sequelize.models)
   Equipment.associate(sequelize.models)
   Horarios.associate(sequelize.models)
   Productos.associate(sequelize.models)
   Rol.associate(sequelize.models)
   RolesUsuarios.associate(sequelize.models)
+  RolesSubmenus.associate(sequelize.models)
   Disciplinas.associate(sequelize.models)
   Rooms.associate(sequelize.models)
   Ventas.associate(sequelize.models)

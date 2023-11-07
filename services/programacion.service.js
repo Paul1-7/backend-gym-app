@@ -37,6 +37,45 @@ async function listarProgramacion(query = '') {
   })
 }
 
+async function obtenerInterseccionSociosProgramacion({
+  fecha,
+  horaEntrada,
+  horaSalida
+}) {
+  return await models.Programacion.findAll({
+    include: [
+      {
+        model: models.Detalle_Programacion,
+        as: 'detalle',
+        include: [
+          {
+            model: models.Usuarios,
+            as: 'socio',
+            attributes: ['id', 'nombre', 'apellidoP']
+          }
+        ]
+      },
+      {
+        model: models.Horarios,
+        as: 'horario',
+        where: {
+          [Op.or]: [
+            {
+              horaEntrada: {
+                [Op.lt]: horaSalida
+              },
+              horaSalida: {
+                [Op.gt]: horaEntrada
+              }
+            }
+          ]
+        }
+      }
+    ],
+    where: { fecha }
+  })
+}
+
 async function contarCodigoProgramacion() {
   const today = format(new Date(), 'yyyyMMdd')
   const pattern = `PR-${today}%`
@@ -115,5 +154,6 @@ module.exports = {
   agregarProgramacion,
   modificarProgramacion,
   listarProgramacionPersonalizada,
-  contarCodigoProgramacion
+  contarCodigoProgramacion,
+  obtenerInterseccionSociosProgramacion
 }

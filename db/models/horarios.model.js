@@ -40,6 +40,16 @@ const HorariosSchema = {
     type: DataTypes.STRING,
     field: 'horario_salida'
   },
+  horaEntrada: {
+    allowNull: false,
+    type: DataTypes.TIME,
+    field: 'hora_entrada'
+  },
+  horaSalida: {
+    allowNull: false,
+    type: DataTypes.TIME,
+    field: 'hora_salida'
+  },
   idSalon: {
     allowNull: false,
     type: DataTypes.STRING,
