@@ -103,7 +103,6 @@ const modificarEmpleado = async (req, res, next) => {
     const { id } = req.params
     const { body } = req
     const { roles, ...dataUser } = body
-    console.log('TCL: modificarEmpleado -> roles', roles)
 
     const empleado = await userServices.actualizarUsuario(id, dataUser, {
       transaction

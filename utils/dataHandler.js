@@ -2,12 +2,9 @@ const { isFuture, differenceInDays, format } = require('date-fns')
 const { SOCIO, RECEPCIONISTA, ENTRENADOR } = require('../config/roles')
 
 const agregarRolSocio = (allRoles, rolesUser) => {
-  console.log('TCL: agregarRolSocio -> rolesUser', rolesUser)
   const rolSocio = allRoles.find((role) => role.nombre === SOCIO).toJSON()
-  console.log('TCL: agregarRolSocio -> rolSocio', rolSocio)
 
   const existeRol = rolesUser?.includes(rolSocio.id)
-  console.log('TCL: agregarRolSocio -> existeRol', existeRol)
 
   return existeRol ? rolesUser : [...rolesUser, [...rolSocio.id]]
 }
