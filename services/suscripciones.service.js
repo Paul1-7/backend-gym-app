@@ -2,7 +2,7 @@ const { Op, QueryTypes } = require('sequelize')
 const sequelize = require('../libs/sequelize.js')
 const { models } = require('../libs/sequelize.js')
 const { verificarSuscripcionActiva } = require('../utils/dataHandler.js')
-const { differenceInDays, add } = require('date-fns')
+const { differenceInDays, add, startOfDay, endOfDay } = require('date-fns')
 
 async function SuscripcionesEntreFechas({ fechaInicio, fechaFin }) {
   return await models.Suscripciones.findAll({
@@ -27,42 +27,58 @@ async function SociosPorRenovacionSuscripciones({ fechaInicio, fechaFin }) {
   )
 }
 
-async function ObtenerSocioMayorSuscripcion() {
-  return await sequelize
-    .query(
-      `select count(u.id) as "numSuscrip", u.nombre, u.apellido_p as "apellidoP", u.apellido_m as "apellidoM", u.ci 
-from "Usuarios" as u, "Planes" as p, "Suscripciones" as s where s.id_plan= p.id and s.id_socio= u.id
- group by  u.nombre, u.apellido_p, u.apellido_m, u.ci
- order by "numSuscrip" desc `,
-      { type: QueryTypes.SELECT }
-    )
-    .then((data) => data.shift())
+async function ObtenerSuscripcionesActivas() {
+  return await models.Suscripciones.findAll({
+    include: ['socio', 'plan'],
+    where: {
+      fecha_fin: {
+        [Op.gte]: sequelize.literal('CURRENT_DATE')
+      }
+    }
+  })
 }
 
-async function ObtenerNumSuscripcionesActivas() {
-  return await sequelize
-    .query(
-      `select count(s.id) as "cantidad"
-from "Usuarios" as u, "Planes" as p, "Suscripciones" as s 
-where s.id_plan= p.id and s.id_socio= u.id and current_date <= s.fecha_fin `,
-      { type: QueryTypes.SELECT }
-    )
-    .then((data) => data.shift().cantidad)
-}
+async function ObtenerPlanMasSolicitado({
+  dateStart: dateStartISO,
+  dateEnd: dateEndISO
+}) {
+  const hasDate = dateStartISO && dateEndISO
+  let whereOptions = {}
 
-async function ObtenerPlanMasSolicitado() {
-  return await sequelize
-    .query(
-      'select  count(s.id_plan) as cantidad, p.nombre  from "Suscripciones" as s, "Planes" as p where s.id_plan= p.id and p.es_expandible= 0 group by p.nombre order by cantidad desc ',
-      { type: QueryTypes.SELECT }
-    )
-    .then((data) => data.shift())
+  if (hasDate) {
+    const dateStart = startOfDay(new Date(dateStartISO)).toISOString()
+    const dateEnd = endOfDay(new Date(dateEndISO)).toISOString()
+
+    whereOptions = {
+      fechaInicio: {
+        [Op.between]: [dateStart, dateEnd]
+      }
+    }
+  }
+
+  return await models.Suscripciones.findAll({
+    attributes: [
+      [sequelize.fn('COUNT', sequelize.col('id_plan')), 'cantidad'],
+      [sequelize.col('plan.nombre'), 'nombre']
+    ],
+    include: [
+      {
+        model: models.Planes,
+        attributes: [],
+        as: 'plan'
+      }
+    ],
+    where: whereOptions,
+    group: ['plan.nombre'],
+    order: [[sequelize.literal('cantidad'), 'DESC']],
+    raw: true
+  })
 }
 
 async function ObtenerPromRenovacionSusc() {
   return await sequelize
     .query(
-      'select avg(cont."suma") from(select sum(cantidad) as "suma", u.ci from "Usuarios" as u, "Planes" as p, "Suscripciones" as s  where s.id_plan= p.id and s.id_socio= u.id and p.es_expandible = 1 group by  u.ci ) as cont',
+      'select avg(cont."suma") from(select sum(cantidad) as "suma", u.ci from "Usuarios" as u, "Planes" as p, "Suscripciones" as s  where s.id_plan= p.id and s.id_socio= u.id and p.es_recurrente = 1 group by  u.ci ) as cont',
       {
         type: QueryTypes.SELECT
       }
@@ -128,8 +144,7 @@ module.exports = {
   SuscripcionesEntreFechas,
   SociosPorRenovacionSuscripciones,
   ObtenerPlanMasSolicitado,
-  ObtenerSocioMayorSuscripcion,
-  ObtenerNumSuscripcionesActivas,
+  ObtenerSuscripcionesActivas,
   ObtenerPromRenovacionSusc,
   ObtenerUltimasSucripciones
 }

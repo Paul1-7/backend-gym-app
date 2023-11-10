@@ -3,6 +3,8 @@ const { models } = require('../libs/sequelize.js')
 const msg = require('../utils/validationsMsg.js')
 const { eliminarRolUsuario } = require('./rolesUsuarios.services')
 const { hash } = require('bcrypt')
+const sequelize = require('../libs/sequelize.js')
+const { startOfDay, endOfDay } = require('date-fns')
 
 async function obtenerUsuariosPorRol(active = false, rolNames, query = {}) {
   const options = {
@@ -86,11 +88,58 @@ async function borrarUsuario(id) {
   return await user?.destroy()
 }
 
+async function obtenerSociosMayorSuscripcion({
+  dateStart: dateStartISO,
+  dateEnd: dateEndISO
+}) {
+  const hasDate = dateStartISO && dateEndISO
+  let whereOptions = {}
+
+  if (hasDate) {
+    const dateStart = startOfDay(new Date(dateStartISO)).toISOString()
+    const dateEnd = endOfDay(new Date(dateEndISO)).toISOString()
+
+    whereOptions = {
+      '$suscripciones.fecha_inicio$': {
+        [Op.between]: [dateStart, dateEnd]
+      }
+    }
+  }
+  return await models.Usuarios.findAll({
+    attributes: [
+      [sequelize.fn('COUNT', sequelize.col('suscripciones.id')), 'numSuscrip'],
+      [sequelize.col('Usuarios.nombre'), 'nombre'],
+      'apellidoP',
+      'apellidoM',
+      'ci'
+    ],
+    include: [
+      {
+        model: models.Suscripciones,
+        as: 'suscripciones',
+        attributes: [],
+        include: [
+          {
+            model: models.Planes,
+            as: 'plan',
+            attributes: []
+          }
+        ]
+      }
+    ],
+    where: whereOptions,
+    group: ['Usuarios.nombre', 'apellido_p', 'apellido_m', 'ci'],
+    order: [[sequelize.literal('"numSuscrip"'), 'DESC']],
+    raw: true
+  })
+}
+
 module.exports = {
   buscarUsuario,
   crearUsuario,
   actualizarUsuario,
   obtenerUsuariosPorRol,
   borrarUsuario,
-  buscarUsuarioPorOpciones
+  buscarUsuarioPorOpciones,
+  obtenerSociosMayorSuscripcion
 }

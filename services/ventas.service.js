@@ -51,20 +51,27 @@ async function BuscarVenta(id) {
   })
 }
 
-async function obtenerVentasPorFecha({ dateStartISO, dateEndISO, orderBy }) {
-  const dateStart = startOfDay(new Date(dateStartISO)).toISOString()
-  const dateEnd = endOfDay(new Date(dateEndISO)).toISOString()
-  const options = {
-    include: ['socio', 'vendedor'],
-    where: {
-      fecha: {
+async function obtenerVentasPorFecha({
+  dateStart: dateStartISO,
+  dateEnd: dateEndISO,
+  orderBy
+}) {
+  const hasDate = dateStartISO && dateEndISO
+  let whereOptions = { include: ['socio', 'vendedor'], order: [orderBy] }
+
+  if (hasDate) {
+    const dateStart = startOfDay(new Date(dateStartISO)).toISOString()
+    const dateEnd = endOfDay(new Date(dateEndISO)).toISOString()
+
+    whereOptions = {
+      ...whereOptions,
+      fechaInicio: {
         [Op.between]: [dateStart, dateEnd]
       }
-    },
-    order: [orderBy]
+    }
   }
 
-  return await models.Ventas.findAll(options)
+  return await models.Ventas.findAll(whereOptions)
 }
 
 async function AgregarVenta(venta) {

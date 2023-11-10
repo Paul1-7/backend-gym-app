@@ -39,16 +39,13 @@ const obtenerVentasPorFecha = async (req, res, next) => {
   try {
     const { dateStart, dateEnd, orderBy } = req.query || {}
 
-    if (!dateStart || !dateEnd || !orderBy)
-      return ERROR_RESPONSE.notAcceptable(msg.notValid, res)
-
     const selectedOption = SALES_REPORT_ORDER_BY.find(
       ({ id }) => id === orderBy
     )
 
     const options = {
-      dateStartISO: dateStart,
-      dateEndISO: dateEnd,
+      dateStart,
+      dateEnd,
       orderBy: selectedOption.criteria
     }
 

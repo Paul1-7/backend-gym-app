@@ -44,19 +44,19 @@ const ListaReporteSuscripciones = async (req, res, next) => {
   }
 }
 
-const ReporteDeResultados = async (req, res, next) => {
+const obtenerPlanMasSolicitado = async (req, res, next) => {
   try {
-    const planMasSolicitado = await services.ObtenerPlanMasSolicitado()
-    const socioMayorSuscripcion = await services.ObtenerSocioMayorSuscripcion()
-    const numSucripcionesActivas =
-      await services.ObtenerNumSuscripcionesActivas()
-    const promRenovaciones = await services.ObtenerPromRenovacionSusc()
-    res.json({
-      planMasSolicitado,
-      socioMayorSuscripcion,
-      numSucripcionesActivas,
-      promRenovaciones
-    })
+    const { query } = req
+    const data = await services.ObtenerPlanMasSolicitado(query)
+    res.json(data)
+  } catch (error) {
+    next(error)
+  }
+}
+const obtenerSuscripcionesActivas = async (req, res, next) => {
+  try {
+    const data = await services.ObtenerSuscripcionesActivas()
+    res.json(data)
   } catch (error) {
     next(error)
   }
@@ -156,6 +156,7 @@ module.exports = {
   EliminarSuscripcion,
   ListaReporteSuscripciones,
   ListarReportesPorRenovacion,
-  ReporteDeResultados,
-  BuscarUltimasSuscripciones
+  obtenerPlanMasSolicitado,
+  BuscarUltimasSuscripciones,
+  obtenerSuscripcionesActivas
 }
