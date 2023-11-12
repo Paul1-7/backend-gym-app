@@ -74,6 +74,7 @@ const DetalleVentasSchema = {
 class DetalleVentas extends Model {
   static associate(models) {
     this.belongsTo(models.Ventas, {
+      as: 'venta',
       foreignKey: 'idVenta'
     })
     this.belongsTo(models.Productos, {

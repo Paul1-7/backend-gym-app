@@ -134,6 +134,58 @@ async function obtenerSociosMayorSuscripcion({
   })
 }
 
+async function obtenerSociosMasCompradores({
+  dateStart: dateStartISO,
+  dateEnd: dateEndISO
+}) {
+  try {
+    const hasDate = dateStartISO && dateEndISO
+    let whereOptions = {}
+
+    if (hasDate) {
+      const dateStart = startOfDay(new Date(dateStartISO)).toISOString()
+      const dateEnd = endOfDay(new Date(dateEndISO)).toISOString()
+
+      whereOptions = {
+        '$ventasSocios.fecha$': {
+          [Op.between]: [dateStart, dateEnd]
+        }
+      }
+    }
+
+    const sociosMasCompradores = await models.Usuarios.findAll({
+      attributes: [
+        'id',
+        'nombre',
+        'apellidoP',
+        'apellidoM',
+        [
+          sequelize.fn('COUNT', sequelize.col('ventasSocios.id')),
+          'totalCompras'
+        ]
+      ],
+      include: [
+        {
+          model: models.Ventas,
+          as: 'ventasSocios',
+          attributes: []
+        }
+      ],
+      where: {
+        estado: 1,
+        ...whereOptions
+      },
+      group: ['Usuarios.id', 'nombre', 'apellidoP', 'apellidoM'],
+      having: sequelize.literal('COUNT("ventasSocios"."id") > 0'),
+      order: [[sequelize.literal('"totalCompras"'), 'DESC']]
+    })
+
+    return sociosMasCompradores
+  } catch (error) {
+    throw error
+  }
+}
+
 module.exports = {
   buscarUsuario,
   crearUsuario,
@@ -141,5 +193,6 @@ module.exports = {
   obtenerUsuariosPorRol,
   borrarUsuario,
   buscarUsuarioPorOpciones,
-  obtenerSociosMayorSuscripcion
+  obtenerSociosMayorSuscripcion,
+  obtenerSociosMasCompradores
 }

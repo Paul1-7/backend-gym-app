@@ -1,4 +1,3 @@
-const { SALES_REPORT_ORDER_BY } = require('../constants/reports.js')
 const { ERROR_RESPONSE } = require('../middlewares/error.handle.js')
 const { AgregarDetalleVenta } = require('../services/detalleVentas.service.js')
 const {
@@ -39,14 +38,9 @@ const obtenerVentasPorFecha = async (req, res, next) => {
   try {
     const { dateStart, dateEnd, orderBy } = req.query || {}
 
-    const selectedOption = SALES_REPORT_ORDER_BY.find(
-      ({ id }) => id === orderBy
-    )
-
     const options = {
       dateStart,
-      dateEnd,
-      orderBy: selectedOption.criteria
+      dateEnd
     }
 
     const sales = await services.obtenerVentasPorFecha(options)

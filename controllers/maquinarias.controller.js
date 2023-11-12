@@ -20,12 +20,16 @@ const msg = {
 
 const listarMaquinarias = async (req, res, next) => {
   try {
-    const { orderBy, criterio } = req.query
+    const { orderBy, criterio, idCategoria } = req.query ?? {}
 
     const selectedOrderBy = EQUIPMENTS_REPORT_ORDER_BY.find(
       ({ id }) => id === orderBy
     )
-    const selectedCriterio = EQUIPMENTS_REPORT_CRITERIA?.[criterio] ?? {}
+    let selectedCriterio = EQUIPMENTS_REPORT_CRITERIA?.[criterio] ?? {}
+
+    if (criterio === '5') {
+      selectedCriterio = { '$categorias.id$': idCategoria }
+    }
 
     const maquinaria = await services.listarMaquinarias({
       where: selectedCriterio,

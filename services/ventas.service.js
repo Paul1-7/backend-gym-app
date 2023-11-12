@@ -53,25 +53,26 @@ async function BuscarVenta(id) {
 
 async function obtenerVentasPorFecha({
   dateStart: dateStartISO,
-  dateEnd: dateEndISO,
-  orderBy
+  dateEnd: dateEndISO
 }) {
   const hasDate = dateStartISO && dateEndISO
-  let whereOptions = { include: ['socio', 'vendedor'], order: [orderBy] }
+  let sequelizeOptions = { include: ['socio', 'vendedor'] }
 
   if (hasDate) {
     const dateStart = startOfDay(new Date(dateStartISO)).toISOString()
     const dateEnd = endOfDay(new Date(dateEndISO)).toISOString()
 
-    whereOptions = {
-      ...whereOptions,
-      fechaInicio: {
-        [Op.between]: [dateStart, dateEnd]
+    sequelizeOptions = {
+      ...sequelizeOptions,
+      where: {
+        fecha: {
+          [Op.between]: [dateStart, dateEnd]
+        }
       }
     }
   }
 
-  return await models.Ventas.findAll(whereOptions)
+  return await models.Ventas.findAll(sequelizeOptions)
 }
 
 async function AgregarVenta(venta) {

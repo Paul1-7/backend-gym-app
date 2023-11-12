@@ -111,7 +111,7 @@ class Productos extends Model {
   static associate(models) {
     this.hasMany(models.Detalle_Ventas, {
       as: 'detalleVentas',
-      foreignKey: 'id'
+      foreignKey: 'idProd'
     })
 
     this.belongsTo(models.Categorias_Productos, {

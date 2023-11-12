@@ -38,6 +38,16 @@ const obtenerSociosMayorSuscripcion = async (req, res, next) => {
   }
 }
 
+const obtenerSociosMasCompradores = async (req, res, next) => {
+  try {
+    const { query } = req
+    const socios = await services.obtenerSociosMasCompradores(query)
+    res.json(socios)
+  } catch (error) {
+    next(error)
+  }
+}
+
 const BuscarSocios = async (req, res, next) => {
   try {
     const { id } = req.params
@@ -123,5 +133,6 @@ module.exports = {
   AgregarSocios,
   ModificarSocios,
   EliminarSocios,
-  obtenerSociosMayorSuscripcion
+  obtenerSociosMayorSuscripcion,
+  obtenerSociosMasCompradores
 }

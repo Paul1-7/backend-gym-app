@@ -1,22 +1,3 @@
-const SALES_REPORT_ORDER_BY = [
-  {
-    id: '1',
-    criteria: ['fecha', 'DESC']
-  },
-  {
-    id: '2',
-    criteria: ['total', 'DESC']
-  },
-  {
-    id: '3',
-    criteria: ['socio', 'nombre', 'DESC']
-  },
-  {
-    id: '4',
-    criteria: ['vendedor', 'nombre', 'DESC']
-  }
-]
-
 const EQUIPMENTS_REPORT_ORDER_BY = [
   {
     id: '1',
@@ -76,11 +57,11 @@ const EQUIPMENTS_REPORT_CRITERIA = {
 const PRODUCTS_REPORT_CRITERIA = {
   1: {},
   2: { tieneVencimiento: true },
-  3: { tieneVencimiento: false }
+  3: { tieneVencimiento: false },
+  4: {}
 }
 
 module.exports = {
-  SALES_REPORT_ORDER_BY,
   EQUIPMENTS_REPORT_ORDER_BY,
   EQUIPMENTS_REPORT_CRITERIA,
   PRODUCTS_REPORT_CRITERIA,

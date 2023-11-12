@@ -14,17 +14,36 @@ const msg = {
 
 const ListarProductos = async (req, res, next) => {
   try {
-    const { orderBy, criterio } = req.query
+    const { orderBy, criterio, idCategoria } = req.query ?? {}
     const selectedOrderBy = PRODUCTS_REPORT_ORDER_BY.find(
       ({ id }) => id === orderBy
     )
-    const selectedCriterio = PRODUCTS_REPORT_CRITERIA?.[criterio] ?? {}
+    let selectedCriterio = PRODUCTS_REPORT_CRITERIA?.[criterio] ?? {}
+
+    if (criterio === '4') {
+      selectedCriterio = { idCategoria }
+    }
 
     const products = await services.ListarProductos({
       where: selectedCriterio,
       orderBy: selectedOrderBy?.criteria
     })
     res.json(products)
+  } catch (error) {
+    next(error)
+  }
+}
+
+const productosMasVendidos = async (req, res, next) => {
+  try {
+    const { dateStart, dateEnd } = req.query || {}
+    const options = {
+      dateStart,
+      dateEnd
+    }
+
+    const data = await services.productosMasVendidos(options)
+    res.json(data)
   } catch (error) {
     next(error)
   }
@@ -96,5 +115,6 @@ module.exports = {
   BuscarProducto,
   AgregarProducto,
   ModificarProducto,
-  EliminarProducto
+  EliminarProducto,
+  productosMasVendidos
 }
