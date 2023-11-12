@@ -391,6 +391,13 @@ module.exports = {
           is_main: false
         },
         {
+          id: '75f510d5-86ec-4e76-8c73-c495b9242509',
+          nombre: 'Reportes de Horarios',
+          estado: 1,
+          id_menu: 'c4c40183-6f83-4fcf-a5b0-e708f4e880d9',
+          is_main: false
+        },
+        {
           id: '87ceee1c-e196-4527-a0b9-832e59ff0a0d',
           nombre: 'Listar Roles',
           estado: 1,

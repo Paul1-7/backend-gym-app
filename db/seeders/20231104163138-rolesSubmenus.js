@@ -307,6 +307,11 @@ module.exports = {
           id_rol: '35b63ba1-8019-4836-83a4-c51a42b2f3ec'
         },
         {
+          id: '849a7c7e-7ff1-4e76-92f3-3fda664bbf2f',
+          id_submenu: '75f510d5-86ec-4e76-8c73-c495b9242509',
+          id_rol: '35b63ba1-8019-4836-83a4-c51a42b2f3ec'
+        },
+        {
           id: 'e2fb4f8a-0db7-4118-bee4-aadb8abd5cfd',
           id_submenu: '4421ac2c-61ac-4e88-a5c8-520ca035925c',
           id_rol: '35b63ba1-8019-4836-83a4-c51a42b2f3ec'
