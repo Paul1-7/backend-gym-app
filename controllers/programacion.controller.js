@@ -26,6 +26,16 @@ const listarProgramaciones = async (req, res, next) => {
   }
 }
 
+const obtenerDisciplinasMasProgramadas = async (req, res, next) => {
+  try {
+    const { query } = req
+    const data = await services.obtenerDisciplinasMasProgramadas(query)
+    res.json(data)
+  } catch (error) {
+    next(error)
+  }
+}
+
 const obtenerInterseccionSociosProgramacion = async (req, res, next) => {
   try {
     const { query } = req
@@ -112,5 +122,6 @@ module.exports = {
   buscarProgramacionPorId,
   agregarProgramacion,
   modificarProgramacion,
-  obtenerInterseccionSociosProgramacion
+  obtenerInterseccionSociosProgramacion,
+  obtenerDisciplinasMasProgramadas
 }

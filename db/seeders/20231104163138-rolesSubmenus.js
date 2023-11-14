@@ -312,8 +312,13 @@ module.exports = {
           id_rol: '35b63ba1-8019-4836-83a4-c51a42b2f3ec'
         },
         {
+          id: '9122673b-8cf9-4770-a6e7-8ba19b1d9a49',
+          id_submenu: '75f510d5-86ec-4e76-8c73-c495b9242509',
+          id_rol: '35b63ba1-8019-4836-83a4-c51a42b2f3ec'
+        },
+        {
           id: 'e2fb4f8a-0db7-4118-bee4-aadb8abd5cfd',
-          id_submenu: '4421ac2c-61ac-4e88-a5c8-520ca035925c',
+          id_submenu: 'e4e53870-0751-4d8a-bb57-5e4048bab230',
           id_rol: '35b63ba1-8019-4836-83a4-c51a42b2f3ec'
         }, // entrenador
         {

@@ -398,6 +398,13 @@ module.exports = {
           is_main: false
         },
         {
+          id: 'e4e53870-0751-4d8a-bb57-5e4048bab230',
+          nombre: 'Reportes de Programación de Clases',
+          estado: 1,
+          id_menu: 'c4c40183-6f83-4fcf-a5b0-e708f4e880d9',
+          is_main: false
+        },
+        {
           id: '87ceee1c-e196-4527-a0b9-832e59ff0a0d',
           nombre: 'Listar Roles',
           estado: 1,

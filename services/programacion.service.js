@@ -1,6 +1,7 @@
 const { Op } = require('sequelize')
 const { models } = require('../libs/sequelize.js')
-const { format } = require('date-fns')
+const { format, startOfDay, endOfDay } = require('date-fns')
+const sequelize = require('../libs/sequelize.js')
 
 async function listarProgramacion(query = '') {
   return await models.Programacion.findAll({
@@ -74,6 +75,58 @@ async function obtenerInterseccionSociosProgramacion({
     ],
     where: { fecha }
   })
+}
+
+async function obtenerDisciplinasMasProgramadas({
+  dateStart: dateStartISO,
+  dateEnd: dateEndISO
+} = {}) {
+  const hasDate = dateStartISO && dateEndISO
+  let whereOptions = {}
+
+  if (hasDate) {
+    const dateStart = startOfDay(new Date(dateStartISO)).toISOString()
+    const dateEnd = endOfDay(new Date(dateEndISO)).toISOString()
+
+    whereOptions = {
+      fecha: {
+        [Op.between]: [dateStart, dateEnd]
+      }
+    }
+  }
+
+  try {
+    const disciplinasMasProgramadas = await models.Programacion.findAll({
+      attributes: [
+        [sequelize.col('horario.disciplina.nombre'), 'nombre'],
+        [
+          sequelize.fn('COUNT', sequelize.col('horario.id_disciplina')),
+          'totalProgramaciones'
+        ]
+      ],
+      include: [
+        {
+          model: models.Horarios,
+          as: 'horario',
+          attributes: [],
+          include: [
+            {
+              model: models.Disciplinas,
+              as: 'disciplina',
+              attributes: []
+            }
+          ]
+        }
+      ],
+      where: whereOptions,
+      group: ['nombre'],
+      order: [[sequelize.literal('"totalProgramaciones"'), 'DESC']]
+    })
+
+    return disciplinasMasProgramadas
+  } catch (error) {
+    throw error
+  }
 }
 
 async function contarCodigoProgramacion() {
@@ -155,5 +208,6 @@ module.exports = {
   modificarProgramacion,
   listarProgramacionPersonalizada,
   contarCodigoProgramacion,
-  obtenerInterseccionSociosProgramacion
+  obtenerInterseccionSociosProgramacion,
+  obtenerDisciplinasMasProgramadas
 }

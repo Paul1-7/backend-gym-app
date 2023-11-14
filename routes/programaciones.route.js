@@ -4,13 +4,18 @@ const {
   agregarProgramacion,
   modificarProgramacion,
   buscarProgramacionPorId,
-  obtenerInterseccionSociosProgramacion
+  obtenerInterseccionSociosProgramacion,
+  obtenerDisciplinasMasProgramadas
 } = require('../controllers/programacion.controller.js')
 const { checkId } = require('../middlewares/validator.handle.js')
 
 const Programacion = express.Router()
 
 Programacion.get('/', listarProgramaciones)
+Programacion.get(
+  '/disciplinas-mas-programadas',
+  obtenerDisciplinasMasProgramadas
+)
 Programacion.get(
   '/disponibilidad-socios/',
   obtenerInterseccionSociosProgramacion

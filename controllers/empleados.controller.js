@@ -58,6 +58,18 @@ const listarEntrenadores = async (req, res, next) => {
   }
 }
 
+const obtenerEntrenadoresMasProgramaciones = async (req, res, next) => {
+  try {
+    const { query } = req
+    const empleados = await userServices.obtenerEntrenadoresMasProgramaciones(
+      query
+    )
+    res.json(empleados)
+  } catch (error) {
+    next(error)
+  }
+}
+
 const buscarEmpleado = async (req, res, next) => {
   try {
     const { id } = req.params
@@ -151,5 +163,6 @@ module.exports = {
   crearEmpleado,
   modificarEmpleado,
   eliminarEmpleado,
-  listarEntrenadores
+  listarEntrenadores,
+  obtenerEntrenadoresMasProgramaciones
 }

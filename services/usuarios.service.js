@@ -186,6 +186,121 @@ async function obtenerSociosMasCompradores({
   }
 }
 
+async function obtenerEntrenadoresMasProgramaciones({
+  dateStart: dateStartISO,
+  dateEnd: dateEndISO
+} = {}) {
+  try {
+    const hasDate = dateStartISO && dateEndISO
+    let whereOptions = {}
+
+    if (hasDate) {
+      const dateStart = startOfDay(new Date(dateStartISO)).toISOString()
+      const dateEnd = endOfDay(new Date(dateEndISO)).toISOString()
+
+      whereOptions = {
+        fecha: {
+          [Op.between]: [dateStart, dateEnd]
+        }
+      }
+    }
+
+    const entrenadoresMasProgramaciones = await models.Usuarios.findAll({
+      attributes: [
+        'id',
+        'nombre',
+        'apellidoP',
+        'apellidoM',
+        [
+          sequelize.fn('COUNT', sequelize.col('horarios.programaciones.id')),
+          'totalProgramaciones'
+        ]
+      ],
+      include: [
+        {
+          model: models.Horarios,
+          as: 'horarios',
+          attributes: [],
+          include: [
+            {
+              model: models.Programacion,
+              as: 'programaciones',
+              attributes: [],
+              where: whereOptions
+            }
+          ]
+        }
+      ],
+      where: {
+        estado: 1
+      },
+      group: ['Usuarios.id', 'nombre', 'apellido_p', 'apellido_m'],
+      having: sequelize.literal('COUNT("horarios->programaciones"."id") > 0'),
+      order: [[sequelize.literal('"totalProgramaciones"'), 'DESC']],
+      raw: true
+    })
+
+    return entrenadoresMasProgramaciones
+  } catch (error) {
+    throw error
+  }
+}
+
+async function obtenerSociosMasProgramaciones({
+  dateStart: dateStartISO,
+  dateEnd: dateEndISO
+} = {}) {
+  try {
+    const hasDate = dateStartISO && dateEndISO
+    let whereOptions = {}
+
+    if (hasDate) {
+      const dateStart = startOfDay(new Date(dateStartISO)).toISOString()
+      const dateEnd = endOfDay(new Date(dateEndISO)).toISOString()
+
+      whereOptions = {
+        fecha: {
+          [Op.between]: [dateStart, dateEnd]
+        }
+      }
+    }
+
+    const sociosMasProgramaciones = await models.Detalle_Programacion.findAll({
+      attributes: [
+        [sequelize.col('socio.nombre'), 'nombre'],
+        [sequelize.col('socio.apellido_p'), 'apellidoP'],
+        [sequelize.col('socio.apellido_m'), 'apellidoM'],
+        [
+          sequelize.fn('COUNT', sequelize.col('id_socio')),
+          'totalProgramaciones'
+        ]
+      ],
+      include: [
+        {
+          model: models.Usuarios,
+          as: 'socio',
+          attributes: [],
+          where: {
+            estado: 1
+          }
+        },
+        {
+          model: models.Programacion,
+          as: 'programacion',
+          attributes: [],
+          where: whereOptions
+        }
+      ],
+      group: ['socio.nombre', 'socio.apellido_p', 'socio.apellido_m'],
+      order: [[sequelize.literal('"totalProgramaciones"'), 'DESC']]
+    })
+
+    return sociosMasProgramaciones
+  } catch (error) {
+    throw error
+  }
+}
+
 module.exports = {
   buscarUsuario,
   crearUsuario,
@@ -194,5 +309,7 @@ module.exports = {
   borrarUsuario,
   buscarUsuarioPorOpciones,
   obtenerSociosMayorSuscripcion,
-  obtenerSociosMasCompradores
+  obtenerSociosMasCompradores,
+  obtenerEntrenadoresMasProgramaciones,
+  obtenerSociosMasProgramaciones
 }
