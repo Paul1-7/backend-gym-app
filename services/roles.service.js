@@ -2,11 +2,11 @@ const { Op } = require('sequelize')
 const { models } = require('../libs/sequelize.js')
 
 async function buscarRolPorNombre(nombre) {
-  return await models.Roles.findOne({ where: { nombre } })
+  return await models.Roles.findOne({ where: { nombre, estado: 1 } })
 }
 async function buscarRol(id) {
   return await models.Roles.findOne({
-    where: { id },
+    where: { id, estado: 1 },
     include: [
       {
         model: models.Submenus,
@@ -29,7 +29,12 @@ async function buscarRol(id) {
 }
 
 async function obtenerRoles(options = {}) {
-  return await models.Roles.findAll(options)
+  return await models.Roles.findAll({
+    where: {
+      estado: 1
+    },
+    ...options
+  })
 }
 
 async function obtenerRolesMenus() {
@@ -51,7 +56,10 @@ async function obtenerRolesMenus() {
           }
         ]
       }
-    ]
+    ],
+    where: {
+      estado: 1
+    }
   })
 }
 
@@ -62,11 +70,16 @@ async function modificarRol(id, data, options = {}) {
   return await models.Roles.update(data, { where: { id }, ...options })
 }
 
+async function eliminarRol(id, options = {}) {
+  return await models.Roles.update({ estado: 0 }, { where: { id }, ...options })
+}
+
 module.exports = {
   buscarRolPorNombre,
   obtenerRoles,
   obtenerRolesMenus,
   agregarRol,
   modificarRol,
-  buscarRol
+  buscarRol,
+  eliminarRol
 }

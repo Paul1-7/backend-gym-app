@@ -43,8 +43,10 @@ async function buscarUsuario(id) {
 }
 
 async function buscarUsuarioPorOpciones(options) {
-  return await models.Usuarios.findOne({
-    where: options,
+  const result = await models.Usuarios.findOne({
+    where: {
+      ...options
+    },
     include: [
       {
         model: models.Roles,
@@ -59,10 +61,18 @@ async function buscarUsuarioPorOpciones(options) {
             as: 'submenus',
             through: { attributes: [] }
           }
-        ]
+        ],
+        where: {
+          estado: 1
+        }
       }
     ]
-  })
+  }).then((data) => data.toJSON())
+
+  return {
+    ...result,
+    roles: result.roles.filter(({ nombre }) => nombre !== SOCIO)
+  }
 }
 
 async function crearUsuario(User, options = {}) {

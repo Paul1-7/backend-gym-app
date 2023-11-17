@@ -5,12 +5,14 @@ const {
   agregarRolSubmenu,
   actualizarRolSubmenu
 } = require('../services/rolesSubmenus.services.js')
+const { ADMINiSTRADOR } = require('../config/roles.js')
 
 const msg = {
   notFound: 'Rol no encontrado',
   deleteSuccess: 'Rol eliminado',
   addSuccess: 'Rol agregado correctamente',
-  modifySuccess: 'Rol modificado correctamente'
+  modifySuccess: 'Rol modificado correctamente',
+  noDeleteAdminRol: 'No se puede eliminar el rol de administrador'
 }
 
 const listarRoles = async (req, res, next) => {
@@ -81,13 +83,12 @@ const modificarRol = async (req, res, next) => {
 const eliminarRol = async (req, res, next) => {
   try {
     const { id } = req.params
-    const existeRol = await services.BuscarRol(id)
-    if (!existeRol) return ERROR_RESPONSE.notFound(msg.notFound, res)
+    const adminRol = await services.buscarRolPorNombre(ADMINiSTRADOR)
 
-    const dataBorrado = await services.EliminarRol(id)
+    if (adminRol.toJSON().id === id)
+      return ERROR_RESPONSE.notAcceptable(msg.noDeleteAdminRol, res)
 
-    if (dataBorrado instanceof Error)
-      return ERROR_RESPONSE.notAcceptable(dataBorrado.message, res)
+    await services.eliminarRol(id)
 
     res.json({ message: msg.deleteSuccess, id })
   } catch (error) {
