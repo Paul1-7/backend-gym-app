@@ -1,11 +1,5 @@
 const { hash } = require('bcrypt')
-const {
-  SOCIO,
-  RECEPCIONISTA,
-  ENTRENADOR,
-  ADMINiSTRADOR,
-  LIMPIEZA
-} = require('../config/roles.js')
+const { ENTRENADOR } = require('../config/roles.js')
 const sequelize = require('../libs/sequelize.js')
 const { ERROR_RESPONSE } = require('../middlewares/error.handle.js')
 
@@ -30,13 +24,7 @@ const msg = {
 const listarEmpleados = async (req, res, next) => {
   try {
     const active = false
-    const empleados = await userServices.obtenerUsuariosPorRol(active, [
-      RECEPCIONISTA,
-      ENTRENADOR,
-      ADMINiSTRADOR,
-      LIMPIEZA,
-      SOCIO
-    ])
+    const empleados = await userServices.obtenerEmpleados(active)
     res.json(empleados)
   } catch (error) {
     next(error)
@@ -125,12 +113,10 @@ const modificarEmpleado = async (req, res, next) => {
     const allRoles = await obtenerRoles()
 
     let newRoles = agregarRolSocio(allRoles, roles)
-
     const rolObject = newRoles.map((idRol) => ({ idRol }))
     await actualizarRolUsuario(id, rolObject, {
       transaction
     })
-
     transaction.commit()
     res.json({ message: msg.modifySuccess })
   } catch (error) {

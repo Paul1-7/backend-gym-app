@@ -1,8 +1,10 @@
-const { Op } = require('sequelize')
 const { ERROR_RESPONSE } = require('../middlewares/error.handle.js')
 const services = require('../services/roles.service.js')
 const sequelize = require('../libs/sequelize.js')
-const { agregarRolSubmenu } = require('../services/rolesSubmenus.services.js')
+const {
+  agregarRolSubmenu,
+  actualizarRolSubmenu
+} = require('../services/rolesSubmenus.services.js')
 
 const msg = {
   notFound: 'Rol no encontrado',
@@ -13,8 +15,8 @@ const msg = {
 
 const listarRoles = async (req, res, next) => {
   try {
-    const planes = await services.obtenerRolesMenus()
-    res.json(planes)
+    const data = await services.obtenerRolesMenus()
+    res.json(data)
   } catch (error) {
     next(error)
   }
@@ -23,10 +25,10 @@ const listarRoles = async (req, res, next) => {
 const buscarRol = async (req, res, next) => {
   try {
     const { id } = req.params
-    const plan = await services.BuscarRol(id)
+    const data = await services.buscarRol(id)
 
-    if (!plan) return ERROR_RESPONSE.notFound(msg.notFound, res)
-    res.json(plan)
+    if (!data) return ERROR_RESPONSE.notFound(msg.notFound, res)
+    res.json(data)
   } catch (error) {
     next(error)
   }
@@ -54,20 +56,24 @@ const agregarRol = async (req, res, next) => {
 }
 
 const modificarRol = async (req, res, next) => {
+  const transaction = await sequelize.transaction()
   try {
     const { id } = req.params
     const { body } = req
-    const { esRecurrente, fechaVencimiento } = body
+    const { nombre, idMenus } = body
 
-    const plan = await services.ModificarRol(id, {
-      ...body,
-      fechaVencimiento: Number(esRecurrente) === 1 ? null : fechaVencimiento
-    })
+    await services.modificarRol(id, { nombre }, { transaction })
 
-    if (!plan) return ERROR_RESPONSE.notFound(msg.notFound, res)
+    const rolesSubmenus = idMenus.map((idSubmenu) => ({
+      idSubmenu,
+      idRol: id
+    }))
 
+    await actualizarRolSubmenu(id, rolesSubmenus, { transaction })
+    await transaction.commit()
     res.json({ message: msg.modifySuccess })
   } catch (error) {
+    await transaction.rollback()
     next(error)
   }
 }
@@ -78,10 +84,10 @@ const eliminarRol = async (req, res, next) => {
     const existeRol = await services.BuscarRol(id)
     if (!existeRol) return ERROR_RESPONSE.notFound(msg.notFound, res)
 
-    const planBorrado = await services.EliminarRol(id)
+    const dataBorrado = await services.EliminarRol(id)
 
-    if (planBorrado instanceof Error)
-      return ERROR_RESPONSE.notAcceptable(planBorrado.message, res)
+    if (dataBorrado instanceof Error)
+      return ERROR_RESPONSE.notAcceptable(dataBorrado.message, res)
 
     res.json({ message: msg.deleteSuccess, id })
   } catch (error) {

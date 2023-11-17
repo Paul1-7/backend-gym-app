@@ -5,6 +5,22 @@ const { eliminarRolUsuario } = require('./rolesUsuarios.services')
 const { hash } = require('bcrypt')
 const sequelize = require('../libs/sequelize.js')
 const { startOfDay, endOfDay } = require('date-fns')
+const { SOCIO } = require('../config/roles.js')
+
+async function obtenerEmpleados(active = false, query = {}) {
+  const options = {
+    include: ['roles', 'horarios']
+  }
+
+  if (active) {
+    options.where = { estado: 1 }
+  }
+
+  const usuarios = await models.Usuarios.findAll(options)
+  const empleados = usuarios.filter((usuario) => usuario.roles.length >= 2)
+
+  return empleados
+}
 
 async function obtenerUsuariosPorRol(active = false, rolNames, query = {}) {
   const options = {
@@ -305,6 +321,7 @@ module.exports = {
   buscarUsuario,
   crearUsuario,
   actualizarUsuario,
+  obtenerEmpleados,
   obtenerUsuariosPorRol,
   borrarUsuario,
   buscarUsuarioPorOpciones,
