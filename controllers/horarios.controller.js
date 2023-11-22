@@ -73,7 +73,7 @@ const agregarHorario = async (req, res, next) => {
       ...body,
       dia: day,
       horaEntrada: format(parseISO(horarioEntrada), 'HH:mm:ss'),
-      horaSalida: format(parseISO(horarioEntrada), 'HH:mm:ss')
+      horaSalida: format(parseISO(horarioSalida), 'HH:mm:ss')
     })
     res.json({ message: msg.addSuccess })
   } catch (error) {

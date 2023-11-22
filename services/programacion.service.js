@@ -41,9 +41,15 @@ async function listarProgramacion(query = '') {
 async function obtenerInterseccionSociosProgramacion({
   fecha,
   horaEntrada,
-  horaSalida
+  horaSalida,
+  participants,
+  idProgramacion
 }) {
-  return await models.Programacion.findAll({
+  const whereIdProgramacion = idProgramacion
+    ? { id: { [Op.ne]: idProgramacion } }
+    : {}
+
+  const result = await models.Programacion.findAll({
     include: [
       {
         model: models.Detalle_Programacion,
@@ -52,9 +58,14 @@ async function obtenerInterseccionSociosProgramacion({
           {
             model: models.Usuarios,
             as: 'socio',
-            attributes: ['id', 'nombre', 'apellidoP']
+            attributes: ['id', 'nombre', 'apellidoP', 'apellidoM']
           }
-        ]
+        ],
+        where: {
+          idSocio: {
+            [Op.in]: participants
+          }
+        }
       },
       {
         model: models.Horarios,
@@ -73,8 +84,10 @@ async function obtenerInterseccionSociosProgramacion({
         }
       }
     ],
-    where: { fecha }
+    where: { fecha, ...whereIdProgramacion }
   })
+
+  return result.map((item) => item.toJSON())
 }
 
 async function obtenerDisciplinasMasProgramadas({

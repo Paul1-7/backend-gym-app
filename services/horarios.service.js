@@ -72,18 +72,20 @@ async function verificarDisponibilidad(horarioEntrada, horarioSalida) {
             [Op.gt]: horarioEntrada
           }
         }
-      ]
+      ],
+      estado: 1
     }
   })
 
   return registrosIntersectados.map((item) => item.toJSON())
 }
 
-async function verificarDisponibilidadMedianteHora(
+async function verificarDisponibilidadMedianteHora({
   horaEntrada,
   horaSalida,
-  dia
-) {
+  dia,
+  idHorario
+}) {
   const registrosIntersectados = await models.Horarios.findAll({
     where: {
       [Op.or]: [
@@ -95,9 +97,13 @@ async function verificarDisponibilidadMedianteHora(
             [Op.gt]: horaEntrada
           }
         }
-      ]
-    },
-    dia
+      ],
+      dia,
+      id: {
+        [Op.ne]: idHorario
+      },
+      estado: 1
+    }
   })
 
   return registrosIntersectados.map((item) => item.toJSON())
