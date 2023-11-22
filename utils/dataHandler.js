@@ -6,7 +6,7 @@ const agregarRolSocio = (allRoles, rolesUser) => {
 
   const existeRol = rolesUser?.includes(rolSocio.id)
 
-  return existeRol ? rolesUser : [...rolesUser, [...rolSocio.id]]
+  return existeRol ? rolesUser : [...rolesUser, rolSocio.id]
 }
 
 const agregarRolRecepcionista = (allRoles, rolesUser) => {
