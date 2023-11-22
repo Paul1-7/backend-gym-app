@@ -79,17 +79,51 @@ async function verificarDisponibilidad(horarioEntrada, horarioSalida) {
   return registrosIntersectados.map((item) => item.toJSON())
 }
 
+async function verificarDisponibilidadMedianteHora(
+  horaEntrada,
+  horaSalida,
+  dia
+) {
+  const registrosIntersectados = await models.Horarios.findAll({
+    where: {
+      [Op.or]: [
+        {
+          horaEntrada: {
+            [Op.lt]: horaSalida
+          },
+          horaSalida: {
+            [Op.gt]: horaEntrada
+          }
+        }
+      ]
+    },
+    dia
+  })
+
+  return registrosIntersectados.map((item) => item.toJSON())
+}
+
 async function eliminarHorarios(id) {
   const schedule = await models.Horarios.findByPk(id)
   return schedule.update({ estado: 0 })
 }
 
-async function buscarHorario(id) {
+async function buscarHorarioPoUsuario(id) {
   return await models.Horarios.findAll({
     where: {
       idUsuario: id
     }
   })
+}
+
+async function buscarHorarioPorId(id) {
+  const result = await models.Horarios.findOne({
+    where: {
+      id
+    }
+  })
+
+  return result.toJSON()
 }
 
 async function modificarHorarios(id, data) {
@@ -99,10 +133,12 @@ async function modificarHorarios(id, data) {
 
 module.exports = {
   agregarHorario,
-  buscarHorario,
+  buscarHorario: buscarHorarioPoUsuario,
   eliminarHorarios,
   modificarHorarios,
   ListarHorarios,
   verificarDisponibilidad,
-  obtenerHorariosEntrenadores
+  obtenerHorariosEntrenadores,
+  verificarDisponibilidadMedianteHora,
+  buscarHorarioPorId
 }

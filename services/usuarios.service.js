@@ -9,7 +9,10 @@ const { SOCIO } = require('../config/roles.js')
 
 async function obtenerEmpleados(active = false, query = {}) {
   const options = {
-    include: ['roles', 'horarios']
+    include: [
+      { model: models.Roles, as: 'roles', where: { estado: 1 } },
+      'horarios'
+    ]
   }
 
   if (active) {
@@ -38,7 +41,15 @@ async function obtenerUsuariosPorRol(active = false, rolNames, query = {}) {
 
 async function buscarUsuario(id) {
   return await models.Usuarios.findByPk(id, {
-    include: ['roles']
+    include: [
+      {
+        model: models.Roles,
+        as: 'roles',
+        where: {
+          estado: 1
+        }
+      }
+    ]
   })
 }
 
